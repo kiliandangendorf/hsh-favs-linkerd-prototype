@@ -1,0 +1,28 @@
+name: build name service
+on:
+  push:
+    paths:
+      - "name-service/**"
+      - ".github/**"
+  workflow_dispatch:
+
+jobs:
+  build-name-service:
+    name: build name service
+    runs-on: ubuntu-latest
+    container: docker:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@master
+        
+      - name: Build and push docker image
+        env:
+          REGISTRY_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          REGISTRY_URL: docker.pkg.github.com/manuelottlik/hsh-favs
+          IMAGE_NAME: name-service
+          IMAGE_TAG: latest
+        run: |
+          cd name-service
+          docker login -u publisher -p $REGISTRY_TOKEN $REGISTRY_URL
+          docker build -t $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG .
+          docker push $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG
