@@ -9,6 +9,8 @@ how we use Linkerd and see its work ([Inspect](#inspect)).
 - [Inspect](#inspect)
   * [Use Linkerd](#use-linkerd)
   * [Install buggy demo app `emojivoto`](#install-buggy-demo-app--emojivoto-)
+  * [Building Docker Image for Minikube](#building-docker-image-for-minikube)
+  * [Run K8s Job](#run-k8s-job)
 - [Connect to VPS](#connect-to-vps)
   * [`ssh` Hosts](#-ssh--hosts)
   * [`ssh-copy-id`](#-ssh-copy-id-)
