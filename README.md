@@ -42,6 +42,10 @@ Here it is where `docker ps` gives the expected result:
 18 Kubernetes container and 
 27 Linkerd container (yes, 45 summed up).
 
+You can easily get there by using:
+```
+minikube ssh
+```
 
 ### Use Linkerd
 
@@ -55,7 +59,7 @@ The Dashboards are there.
 - Grafana: http://localhost:50750/grafana  
 	Grafana visualizes metrics collected by Prometheus.
 
-This is where we use the [`ssh` tunnel](#port-forwarding) again.
+This is where we use the [`ssh`-tunnel](#port-forwarding) again.
 ```
 ssh -nNT -L 12345:127.0.0.1:50750 favs
 ```
@@ -94,7 +98,67 @@ To remove the `emojivoto` pods, give Kubernetes the manifest again but now with 
 curl -sL https://run.linkerd.io/emojivoto.yml | kubectl delete -f -
 ```
 
+### Building Docker Image for Minikube
 
+Here's a good explanation from Sergei on Medium: 
+[How to Run Locally Built Docker Images in Kubernetes](https://medium.com/swlh/how-to-run-locally-built-docker-images-in-kubernetes-b28fbc32cc1d)
+
+To build a Docker Image so that Minikube can use it, we need to run following command in every shell, we want to build:
+```
+eval $(minikube -p minikube docker-env)
+```
+After this command, we can build from Dockerfile as usual:
+```
+docker build . -t <nice-tag>
+```
+Now Kubernetes can find tagged image stated in manifest.
+
+### Run K8s Job 
+
+This is a spartan `manifest.yml`:
+```
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: <fancy-name>
+spec:
+  template:
+    metadata:
+      name: <fancy-pod-name>
+    spec:
+      containers:
+      - name: <fancy-container-name>
+        image: <image-tag-from-above>
+        imagePullPolicy: Never
+      restartPolicy: Never
+```
+Since this image is build locally, we add the `imagePullPolicy` to `Never`.
+
+Now we can run it injecting Linkerd in one with:
+```
+cat <config-yml> \
+  | linkerd inject - \
+  | kubectl apply -f -
+```
+
+To list local pods:
+```
+kubectl get pods
+```
+
+Find unique name and check logs:
+```
+kubectl logs <unique-pod-name>
+```
+If there are several belonging containers, you'll have to specify:
+```
+kubectl logs <unique-pod-name> <fancy-container-name>
+```
+
+This will remove the pod again:
+```
+kubectl delete -f <config-yml>
+```
 
 ## Connect to VPS
 
@@ -159,7 +223,8 @@ ssh -nNT -L 12345:127.0.0.1:38055 favs
 (The `-nNT` prevents the shell to be opened, since we only need the tunnel, not the remote shell.)
 
 Ex. Run `minikube dashboard` on the VPS and you can access via:  
-http://localhost:12345/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
+http://localhost:12345/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/  
+(Minikube changing its dashboard-port every time it starts :/)
 
 One slower alternative (but sometimes not avoidable) is the X11 Forwarding.
 
@@ -236,6 +301,7 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 ```
+(We do not need docker-compose for our Service Mesh, but for testing it's helpful.)
 
 ### Post-installation Steps for Linux
 
@@ -291,6 +357,10 @@ curl -sL https://run.linkerd.io/install | sh
 and add to the `$PATH` environment:
 ```
 export PATH=$PATH:$HOME/.linkerd2/bin
+```
+To make sure, this happens for every shell you run, put this into the `.bashrc`:
+```
+echo "export PATH=$PATH:$HOME/.linkerd2/bin" >> ~/.bashrc
 ```
 
 Check if everything went well:
