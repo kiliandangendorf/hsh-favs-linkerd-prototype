@@ -6,28 +6,30 @@ how we use Linkerd and see its work ([Inspect](#inspect)).
 
 
 ## Overview
-- [Inspect](#inspect)
-  * [Use Linkerd](#use-linkerd)
-  * [Install buggy demo app `emojivoto`](#install-buggy-demo-app--emojivoto-)
-  * [Building Docker Image for Minikube](#building-docker-image-for-minikube)
-  * [Run K8s Job](#run-k8s-job)
-- [Connect to VPS](#connect-to-vps)
-  * [`ssh` Hosts](#-ssh--hosts)
-  * [`ssh-copy-id`](#-ssh-copy-id-)
-  * [Tunneling](#tunneling)
-    + [Port-Forwarding](#port-forwarding)
-    + [X11 Forwarding](#x11-forwarding)
-- [Installation](#installation)
-  * [Pre Steps](#pre-steps)
-    + [Add user `favs`](#add-user--favs-)
-    + [Change `ssh` Settings](#change--ssh--settings)
-  * [Docker](#docker)
-  * [Docker-Compose](#docker-compose)
-  * [Post-installation Steps for Linux](#post-installation-steps-for-linux)
-  * [Minikube](#minikube)
-  * [`kubectl`](#-kubectl-)
-  * [Firefox](#firefox)
-  * [Linkerd](#linkerd)
+- [FAVS VPS](#favs-vps)
+  - [Overview](#overview)
+  - [Inspect](#inspect)
+    - [Use Linkerd](#use-linkerd)
+    - [Install buggy demo app `emojivoto`](#install-buggy-demo-app-emojivoto)
+    - [Building Docker Image for Minikube](#building-docker-image-for-minikube)
+    - [Run K8s Job](#run-k8s-job)
+  - [Connect to VPS](#connect-to-vps)
+    - [`ssh` Hosts](#ssh-hosts)
+    - [`ssh-copy-id`](#ssh-copy-id)
+    - [Tunneling](#tunneling)
+      - [Port-Forwarding](#port-forwarding)
+      - [X11 Forwarding](#x11-forwarding)
+  - [Installation](#installation)
+    - [Pre Steps](#pre-steps)
+      - [Add user `favs`](#add-user-favs)
+      - [Change `ssh` Settings](#change-ssh-settings)
+    - [Docker](#docker)
+    - [Docker-Compose](#docker-compose)
+    - [Post-installation Steps for Linux](#post-installation-steps-for-linux)
+    - [Minikube](#minikube)
+    - [`kubectl`](#kubectl)
+    - [Firefox](#firefox)
+    - [Linkerd](#linkerd)
 
 
 ## Inspect
@@ -309,8 +311,8 @@ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 Add `docker` to Sudoers:
 ```
-sudo groupadd docker #if not already exists
-sudo usermod -aG docker $USER 
+sudo groupadd docker#if not already exists
+sudo usermod -aG docker $USER
 newgrp docker 
 ```
 (https://docs.docker.com/engine/install/linux-postinstall/)
@@ -322,7 +324,7 @@ It runs lightweight and should be easy to learn Kubernetes.
 Also Linkerd recommends it ;)
 
 ```
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 rm minikube-linux-amd64
 ```
