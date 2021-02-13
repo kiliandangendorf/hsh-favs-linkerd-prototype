@@ -2,7 +2,7 @@ name: build goodbye-world service
 on:
   push:
     paths:
-      - "goodbye-world-service/**"
+      - "src/goodbye-world-service/**"
       - ".github/**"
   workflow_dispatch:
 
@@ -22,7 +22,7 @@ jobs:
           IMAGE_NAME: goodbye-world-service
           IMAGE_TAG: latest
         run: |
-          cd goodbye-world-service
+          cd src/goodbye-world-service
           docker login -u publisher -p $REGISTRY_TOKEN $REGISTRY_URL
           docker build -t $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG .
           docker push $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG

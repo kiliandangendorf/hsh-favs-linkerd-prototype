@@ -2,7 +2,7 @@ name: build hello-world service
 on:
   push:
     paths:
-      - "hello-world-service/**"
+      - "src/hello-world-service/**"
       - ".github/**"
   workflow_dispatch:
 
@@ -22,7 +22,7 @@ jobs:
           IMAGE_NAME: hello-world-service
           IMAGE_TAG: latest
         run: |
-          cd hello-world-service
+          cd src/hello-world-service
           docker login -u publisher -p $REGISTRY_TOKEN $REGISTRY_URL
           docker build -t $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG .
           docker push $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG

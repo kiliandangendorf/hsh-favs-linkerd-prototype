@@ -2,7 +2,7 @@ name: build name service
 on:
   push:
     paths:
-      - "name-service/**"
+      - "src/name-service/**"
       - ".github/**"
   workflow_dispatch:
 
@@ -22,7 +22,7 @@ jobs:
           IMAGE_NAME: name-service
           IMAGE_TAG: latest
         run: |
-          cd name-service
+          cd src/name-service
           docker login -u publisher -p $REGISTRY_TOKEN $REGISTRY_URL
           docker build -t $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG .
           docker push $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG
