@@ -1,0 +1,49 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{lipsum}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\makeatletter
+\newcommand{\linebreakand}{%
+  \end{@IEEEauthorhalign}
+  \hfill\mbox{}\par
+  \mbox{}\hfill\begin{@IEEEauthorhalign}
+}
+\makeatother
+
+\begin{document}
+
+\title{Service meshes as a solution for developing technology-independent microservices
+}
+
+\input{chapters/00_authors}
+
+\maketitle
+\thispagestyle{plain}
+\pagestyle{plain}
+
+\input{chapters/00_abstract}
+
+% brauchen wir sowas?
+\begin{IEEEkeywords}
+service meshes, microservices, kubernetes, java, nodejs, scalability, high availability
+\end{IEEEkeywords}
+
+\input{chapters/01_intro}
+\input{chapters/02_microservices}
+\input{chapters/03_service_meshes}
+\input{chapters/04_market_solutions}
+\input{chapters/05_poc_impl}
+
+\input{bibliography}
+
+\end{document}
