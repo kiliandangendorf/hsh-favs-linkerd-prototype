@@ -1,7 +1,44 @@
 \section{Solutions on the market}
 
-The following chapter presents the two most popular solutions used in the context of service meshes: Istio and Linkerd.
+The following chapter presents the two most popular solutions used in the context of service meshes: Istio and Linkerd. Table \ref{tab:istio-linkerd} summarizes the key aspects of both tools, according to \cite{linkerd-github}, \cite{istio-github}, \cite{istio-linkerd-compare-1} and \cite{istio-linkerd-compare-2}:
+% Please add the following required packages to your document preamble:
 
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+% \usepackage{graphicx}
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+% \usepackage{tablefootnote}
+
+
+% \usepackage{tablefootnote}
+
+\begin{table}
+\centering
+
+\begin{tabular*}{\columnwidth}{c|c|c}
+                                 & Istio                                                                                                              & Linkerd     \\\hline
+Initiators & \begin{tabular}[c]{@{}c@{}}Lyft, IBM,\\Google\end{tabular}                                                          	& \begin{tabular}[c]{@{}c@{}}Buoyant, Cloud Native\\Foundation\end{tabular}                                                           \\\hline
+License                 & \multicolumn{2}{c}{Apache 2.0}                                                                                                          \\\hline
+Runs on                          & \begin{tabular}[c]{@{}c@{}}Kubernetes,\\VMs\end{tabular}                                                           & Kubernetes  \\\hline
+Sidecar proxy                    & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
+Supports mTLS                    & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
+Certificate management           & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
+Authentication and authorization & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
+Blue/Green deployment            & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
+Circuit breaking                 & Yes                                                                                                                & No          \\\hline
+Fault injection                  & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
+Rate limiting                    & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
+Monitoring                       & \multicolumn{2}{c}{Yes, with Prometheus}                                                                                         \\\hline
+Complexity                       & High                                                                                                               & Low         \\\hline
+Starts on GitHub \cite{linkerd-github} \cite{istio-github}              & 26.2k & 6.6k        \\\hline
+Open issues on GitHub \cite{linkerd-github} \cite{istio-github}                 & 817                                                                                                                & 257         \\\hline
+Documentation                    & ++                                                                                                                 & +          
+\end{tabular*}
+\vspace{0.25mm}
+\caption{Comparison between Isto and Linkerd}
+\label{tab:istio-linkerd}
+\end{table}
 \subsection{Istio}
 
 \subsection{Linkerd}
