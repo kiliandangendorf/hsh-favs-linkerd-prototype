@@ -60,13 +60,14 @@ With the use of a service mesh, it should be easy to apply and remove certain po
 
 \subsection{Opportunities and risks}
 
-To highlight the benefits of a services mesh, you need to imagine a microservice architecture without services meshes. Figure 4 illustrates that each microservice requires a significant amount of logic to enable interservice communication. The effort required to implement this logic multiplies if, for example, Circuit Breaker is required in Java, Node JS, and Python. Since the requirements for infrastructure logic are the same in almost all microservice applications, it only makes sense to map this logic to an abstracted layer. This is where the service mesh comes into play. According to \cite{sm4}, the further advantages and drawbacks of a service mesh are as follows:
-
 \begin{figure}
     \includegraphics[width=\columnwidth]{img/microservices_without_mesh.JPG}
     \caption{Ex. architecture of microservices without service mesh\cite[S. 265]{sm4}}
     \label{fig:microservice-without-mesh}
 \end{figure}
+
+
+To highlight the benefits of a services mesh, you need to imagine a microservice architecture without services meshes. Figure 4 illustrates that each microservice requires a significant amount of logic to enable interservice communication. The effort required to implement this logic multiplies if, for example, Circuit Breaker is required in Java, Node JS, and Python. Since the requirements for infrastructure logic are the same in almost all microservice applications, it only makes sense to map this logic to an abstracted layer. This is where the service mesh comes into play. According to \cite{sm4}, the further advantages and drawbacks of a service mesh are as follows:
 
 \subsubsection{Advantages}
 
