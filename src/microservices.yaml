@@ -23,7 +23,7 @@ spec:
         image: microservice-linkerd-nameapi:1
         imagePullPolicy: Never
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         resources: {}
 status: {}
 
@@ -54,7 +54,7 @@ spec:
         image: microservice-linkerd-helloworld:1
         imagePullPolicy: Never        
         ports:
-        - containerPort: 8080
+        - containerPort: 80
         resources: {}
 status: {}
 
@@ -102,7 +102,7 @@ spec:
   ports:
   - port: 80
     protocol: TCP
-    targetPort: 8080
+    targetPort: 80
     name: http    
   selector:
     app: nameapi
@@ -123,7 +123,7 @@ spec:
   ports:
   - port: 80
     protocol: TCP
-    targetPort: 8080
+    targetPort: 80
     name: http    
   selector:
     app: helloworld
