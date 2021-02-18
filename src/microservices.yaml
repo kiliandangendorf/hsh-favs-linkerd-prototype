@@ -1,0 +1,207 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nameapi
+    version: "1.0"
+  name: nameapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nameapi
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nameapi
+    spec:
+      containers:
+      - name: nameapi
+        image: microservice-linkerd-nameapi:1
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        resources: {}
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: helloworld
+    version: "1.0"
+  name: helloworld
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helloworld
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: helloworld
+    spec:
+      containers:
+      - name: helloworld
+        image: microservice-linkerd-helloworld:1
+        imagePullPolicy: Never        
+        ports:
+        - containerPort: 8080
+        resources: {}
+status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: goodbyeworld    
+    version: "1.0"
+  name: goodbyeworld
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goodbyeworld
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: goodbyeworld
+    spec:
+      containers:
+      - name: goodbyeworld
+        image: microservice-linkerd-goodbyeworld:1
+        imagePullPolicy: Never        
+        ports:
+        - containerPort: 8080
+        resources: {}
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nameapi
+  name: nameapi
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+    name: http    
+  selector:
+    app: nameapi
+  type: NodePort
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: helloworld
+  name: helloworld
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+    name: http    
+  selector:
+    app: helloworld
+  type: NodePort
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: goodbyeworld
+  name: goodbyeworld
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+    name: http    
+  selector:
+    app: goodbyeworld
+  type: NodePort
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: helloworld
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    ingress.kubernetes.io/custom-request-headers: l5d-dst-override:helloworld.default.svc.cluster.local:80
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /helloworld
+        backend:
+          serviceName: helloworld
+          servicePort: 80
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nameapi
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    ingress.kubernetes.io/custom-request-headers: l5d-dst-override:nameapi.default.svc.cluster.local:80
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /nameapi
+        backend:
+          serviceName: nameapi
+          servicePort: 80
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: goodbyeworld
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    ingress.kubernetes.io/custom-request-headers: l5d-dst-override:goodbyeworld.default.svc.cluster.local:80
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /goodbyeworld
+        backend:
+          serviceName: goodbyeworld
+          servicePort: 80
