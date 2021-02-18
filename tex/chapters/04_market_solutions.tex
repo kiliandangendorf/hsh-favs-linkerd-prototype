@@ -17,7 +17,36 @@ The four main Kubernetes objects are important to understand the role of service
 
 Service meshes that use Kubernetes extend the functionality by abstracting concepts like automatic sidcar injection. This would be also possible without service meshes, but significantly more complex and less automated.
 
-\subsection{Istio \& Linkerd}
+\subsection{Istio}
+
+As illustrated in figure \ref{fig:arch-istio}, Istio uses a basic control and data plane architecture, as explained in chapter \ref{chap:mesh-architecture}. For the data plane, it uses the sidecar pattern by using \textsc{Envoy} proxies. \textsc{Envoy} a high-performance proxy that already brings features like service discovery, load balancing, circuit breaking and many more \cite{istio-docs-arch}.
+
+\textsc{Istiod} (Istio daemon) provides management for service discovery, configuration and certificates. It converts routing rules into \textsc{Envoy}'s configuration format and also directs the traffic to the sidecar proxies \cite{istio-docs-arch}.
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{img/istio_architecture.png}
+    \caption{Architecture of Istio \cite{istio-docs-arch}}
+    \label{fig:arch-istio}
+\end{figure}
+
+\subsection{Linkerd}
+
+According to Linkerd's documentation \cite{linkerd-docs-arch}, Linkerd also uses a basic control and data plane architecture, as explained in chapter \ref{chap:mesh-architecture}. It also uses the sidecar pattern, but has implemented an own proxy solution named \textsc{Linkerd2-proxy}. Linkerd developers rate \textsc{Envoy} as too complex \cite{linkerd-docs-no-envoy}, which is why they decided to implement their own solution, which they call a "micro-proxy". 
+Unlike Istio, Linkerd does not handle ingress traffic. It works in conjunction of every ingress controller of choice, e.g. \textsc{nginx} \cite{linkerd-docs-faq}.
+
+As illustrated in figure \ref{fig:arch-linkerd}, each \textsc{linkerd-proxy} has access to two components: \textsc{identity} and \textsc{destination}.
+
+\textsc{destination} is a lookup-service, where each proxy is able to check where exactly to send requests. \textsc{identity} provides a certificate authority.
+
+While injecting a sidecar proxy on an application service, a route \textsc{/metrics} at port 4191 is exposed to provide log messages and metrics for \textsc{Prometheus}, which is a central logging and monitoring instance which is often used with Kubernetes \cite{linkerd-docs-arch}.
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{img/linkerd_architecture.png}
+    \caption{Architecture of Linkerd \cite{linkerd-docs-arch}}
+    \label{fig:arch-linkerd}
+\end{figure}
+
+\subsection{Comparison}
 
 As stated before, two very popular solutions for service meshes are Linkerd and Istio. Table \ref{tab:istio-linkerd} summarizes the key aspects of both tools, according to \cite{linkerd-github}, \cite{istio-github}, \cite{istio-linkerd-compare-1} and \cite{istio-linkerd-compare-2}:
 

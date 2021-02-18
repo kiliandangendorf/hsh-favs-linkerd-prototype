@@ -7,6 +7,13 @@
     \label{fig:detailed mesh}
 \end{figure*}
 
+
+\begin{figure}
+    \includegraphics[width=\columnwidth]{img/mesh.png}
+    \caption{Simplified service mesh based microservice architecture \cite{sm2}}
+    \label{fig:overview}
+\end{figure}
+
 As mentioned in the previous chapter, creating an appropriate microservices infrastructure tend to be more complicated than implementing the business logic itself. For this reason, there is a need for infrastructure solutions that relieve the developers of the business logic. A service mesh is one conceivable solution approach and is defined as follows:
 
 \subsection{Definition}
@@ -19,14 +26,9 @@ In practice, the service mesh is typically implemented as an array of lightweigh
 The last sentence of the definition sounds promising: The developer no longer has to worry about the infrastructure tasks. In the context of this paper, it should become clear how decoupled the infrastructure layer actually is.
 
 \subsection{Architecture}
+\label{chap:mesh-architecture}
 
 Figure \ref{fig:overview} shows a simplified microservice architecture using service meshes. The mentioned infrastructure layer is a composition of the lightweight network proxies, also called sidecards. These sidecars control the entire network communication between the microservice instances. Without service mesh, each service must implement this interservice logic on its own, which compromises developer focus on business goals. The figure perfectly illustrates that application services are decoupled from interservice communication.
-
-\begin{figure}
-    \includegraphics[width=\columnwidth]{img/mesh.png}
-    \caption{Simplified service mesh based microservice architecture \cite{sm2}}
-    \label{fig:overview}
-\end{figure}
 
 A more detailed illustration of a service mesh architecture is shown in figure \ref{fig:detailed mesh}. A service mesh consists of a control plane and a data plane.
 The control plane is responsible for administrative tasks. This is where, for example, system-wide authentication and authorization policies are configured and made available to the proxies. Furthermore, settings for circuit breaking, timeouts and load balancing are made here. The composition of all application services with their sidecar proxies is called data plane \cite{sm4}.
