@@ -11,10 +11,10 @@ The following chapter describes our concept of our prototypical service mesh imp
 
 \subsection{Services}
 
-Our basic idea is to implement three simple microservice applications that communicate via REST. To prove technology independence, one service is written in Node.js, while the other two services are written in Java. Another requirement to meet is that the services have to be as simple as possible. Furthermore, the functionality of the services is intended to be as follows:
+Our basic idea is to implement three simple microservice applications that communicate via REST. To prove technology independence, one service is written in Node.js, while the other two services are written in Python. Another requirement to meet is that the services have to be as simple as possible. Furthermore, the functionality of the services is intended to be as follows:
 
 \begin{itemize}
-\item \textsc{name-service}: Provides endpoint to retrieve a collection of names. It stores the names in a file or a simple ArrayList.
+\item \textsc{name-service}: Provides endpoint to retrieve a collection of names. It stores the names in a file or a simple array list.
 \item \textsc{goodbye-world-service}: Provides endpoint to retrieve a message ``Goodbye, World!"
 \item \textsc{hello-world-service}: Contacts the \textsc{name-service} and provides an endpoint that returns a ``Hello, \{name\}" message for each name object from name service.
 \end{itemize}
