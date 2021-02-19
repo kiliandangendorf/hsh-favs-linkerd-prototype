@@ -17,8 +17,8 @@ jobs:
         
       - name: Build and push docker image
         env:
-          REGISTRY_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          REGISTRY_URL: docker.pkg.github.com/manuelottlik/hsh-favs
+          REGISTRY_TOKEN: ${{secrets.GHCR_TOKEN}}
+          REGISTRY_URL: ghcr.io/manuelottlik
           IMAGE_NAME: name-service
           IMAGE_TAG: latest
         run: |
