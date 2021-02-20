@@ -101,6 +101,7 @@ kubectl label namespace default \
 \end{lstlisting}
 
 \begin{lstlisting}[language=bash,caption={Injection of sidecards into a deployment in \textsc{Linkerd}}, label={lst:linkerd}]
+#!/bin/bash
 cat deployment.yml | linkerd inject - \
 	| kubectl apply -f -
 \end{lstlisting}

@@ -42,3 +42,20 @@ To encapsulate the services, a \textsc{gateway-service} has to be implemented. T
 
 \subsubsection{Central monitoring and logging}
 The proof of concept should show that services in a microservice landscape can be monitored and managed centrally using the service mesh.
+
+\subsection{Setup of Linkerd}
+
+The following sequence of bash commands shows the \textsc{Linkerd} installation process and the application of the service mesh to the \textsc{Kubernetes} cluster \cite{linkerd-get-started}:
+\begin{lstlisting}[language=bash,caption={Setup of \textsc{Linkerd}}, label={lst:linkerd-setup}]
+#!/bin/bash
+curl -sL https://run.linkerd.io/install \
+	| sh
+export PATH=$PATH:$HOME/.linkerd2/bin
+echo "export PATH=$PATH:$HOME/.linkerd2/bin" \
+	>> ~/.bashrc
+linkerd install | kubectl apply -f -
+\end{lstlisting}
+
+\subsection{Resource definition for applications}
+
+\subsection{Policy application}
