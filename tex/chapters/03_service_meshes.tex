@@ -25,10 +25,24 @@ In practice, the service mesh is typically implemented as an array of lightweigh
 
 The last sentence of the definition sounds promising: The developer no longer has to worry about the infrastructure tasks. In the context of this paper, it should become clear how decoupled the infrastructure layer actually is.
 
+\subsection{Sidecar pattern}
+
+According to the service mesh definition, lots of service mesh solutions take usage of the so-called Sidecar pattern to realize the network proxies. The Sidecar pattern is defined as follows:
+
+\begin{quote}
+``A sidecar is a software component that is co-located with 
+the primary application but runs on its own process or container, providing 
+a network interface to connect to it, which makes it language-agnostic. All 
+the core application functionalities are implemented as part of the main 
+application logic, while other commodity crosscutting features, which are not related to the business logic, are facilitated from the sidecar. Usually all the inbound and outbound communication of the application take place via the sidecar proxy." \cite[p. 266]{sm3}
+\end{quote}
+
+From the definition it is already clear that the communication is essentially controlled via the sidecar in order to pull the responsibility out of the application.
+
 \subsection{Architecture}
 \label{chap:mesh-architecture}
 
-Figure \ref{fig:overview} shows a simplified microservice architecture using service meshes. The mentioned infrastructure layer is a composition of the lightweight network proxies, also called sidecars. These sidecars control the entire network communication between the microservice instances. Without service mesh, each service must implement this interservice logic on its own, which compromises developer focus on business goals. The figure perfectly illustrates that application services are decoupled from interservice communication.
+Figure \ref{fig:overview} shows a simplified microservice architecture using service meshes. The mentioned infrastructure layer is a composition of the lightweight network proxies. These sidecars control the entire network communication between the microservice instances. Without service mesh, each service must implement this interservice logic on its own, which compromises developer focus on business goals. The figure perfectly illustrates that application services are decoupled from interservice communication.
 
 A more detailed illustration of a service mesh architecture is shown in figure \ref{fig:detailed mesh}. A service mesh consists of a control plane and a data plane.
 The control plane is responsible for administrative tasks. This is where, for example, system-wide authentication and authorization policies are configured and made available to the proxies. Furthermore, settings for circuit breaking, timeouts and load balancing are made here. The composition of all application services with their sidecar proxies is called data plane \cite{sm4}.

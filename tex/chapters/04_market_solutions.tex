@@ -1,6 +1,12 @@
 \section{Solutions on the market}
 
-The following chapter presents the two most popular solutions used in the context of service meshes: \textsc{Istio} and \textsc{Linkerd}. Both technology solutions have in common that they are based on \textsc{Kubernetes}. While \textsc{Linkerd} requires \textsc{Kubernetes}, \textsc{Istio} could also rely on virtual machines. To understand practical solutions of service meshes, it is very helpful to know how \textsc{Kubernetes} works. Since \textsc{Kubernetes} is often used together with Docker, this tool is also briefly explained.
+The following chapter presents the two most popular solutions used in the context of service meshes: \textsc{Istio} and \textsc{Linkerd}. Both technology solutions have in common that they are based on \textsc{Kubernetes}. While \textsc{Linkerd} requires \textsc{Kubernetes}, \textsc{Istio} could also rely on virtual machines. To understand practical solutions of service meshes, it is very helpful to know how \textsc{Kubernetes} works. Since \textsc{Kubernetes} is often used together with \textsc{Docker}, this tool is also briefly explained.
+
+\subsection{Docker}
+
+\textsc{Docker} is a tool to encapsulate applications in so-called containers. It is built on Linux user groups and namespaces. Compared to a virtual machine, \textsc{Docker} is much more lightweight. All containers on the same host machine share the operating system kernel. Therefore, the overhead of booting the operating system for each container is eliminated \cite[p. 220 ff.]{sm3}.
+
+Microservices are often deployed as so-called \textsc{Docker} images. This is a package consisting of the application and all its dependencies. The application itself only has access to the dependencies running in the image. The build process of a \textsc{Docker} image is defined in a so-called \textsc{Dockerfile} \cite[p. 224]{sm3}.
 
 \subsection{Kubernetes}
 
