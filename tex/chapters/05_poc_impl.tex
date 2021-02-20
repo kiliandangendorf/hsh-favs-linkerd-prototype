@@ -1,6 +1,6 @@
 \section{Prototypical service mesh implementation}
 
-The following chapter describes our concept of our prototypical service mesh implementation and its outcome.
+The following chapter describes our concept of our prototypical service mesh implementation and its outcome. In order to also practically work out the differences between service meshes and a traditional microservice operation, we will initially run our application using only Kubernetes, and then later set up a service mesh.
 
 \begin{figure*}
     \centering
@@ -19,23 +19,43 @@ Our basic idea is to implement three simple microservice applications that commu
 \item \textsc{hello-world-service}: Contacts the \textsc{name-service} and provides an endpoint that returns a ``Hello, \{name\}" message for each name object from name service.
 \end{itemize}
 
+Since Linkerd does not provide an own ingress controller (see chapter \ref{linkerd}), we use an external ingress controller named \textsc{traefik}.
+
 \subsection{Showcases}
 
 Our prototypical implementation aims to provide answers to the following five challenges of running and maintaining microservices.
 
 \subsubsection{Encryption}
 
-By using a service mesh, it should be shown that a encryption policy can be easily applied or removed.
+By using a service mesh, it should be shown that an encryption policy can be easily applied or removed.
 
 \subsubsection{Canary Deployment}
 
-To provide an example showcase for Blue/Green deployment, we implemented two versions of \textsc{goodbye-world-service} which differ minimally by the returned string. The mesh is tasked with redirecting traffic so that 90\% of all requests are made to version 1 and 10\% of requests are made to version 2.
+To provide an example showcase for canary deployment, we implemented two versions of \textsc{goodbye-world-service} which differ minimally by the returned string. The mesh is tasked with redirecting traffic so that 90\% of all requests are made to version 1 and 10\% of requests are made to version 2.
 
 \subsubsection{Access Policies}
 
-Another restriction is that the \textsc{name-service} is only accessible from the \textsc{hello-world-service}.
+Another restriction is that the \textsc{name-service} is only accessible from the \textsc{hello-world-service}. Access restriction should not be a task of the actual \textsc{name-service} application. We want to show that access to services is easily managable via YAML resources.
 
 \subsubsection{Load Balancing}
 To encapsulate the services, a \textsc{gateway-service} has to be implemented. The gateway forwards the requests to the \textsc{hello-world-service} and \textsc{goodbye-world-service}. It also balances the load of requests.
 
 \subsubsection{Central monitoring and logging}
+The proof of concept should show that services in a microservice landscape can be monitored and managed centrally using the service mesh.
+
+\subsection{Setup of Linkerd}
+
+The following sequence of bash commands shows the \textsc{Linkerd} installation process and the application of the service mesh to the \textsc{Kubernetes} cluster \cite{linkerd-get-started}:
+\begin{lstlisting}[language=bash,caption={Setup of \textsc{Linkerd}}, label={lst:linkerd-setup}]
+#!/bin/bash
+curl -sL https://run.linkerd.io/install \
+	| sh
+export PATH=$PATH:$HOME/.linkerd2/bin
+echo "export PATH=$PATH:$HOME/.linkerd2/bin" \
+	>> ~/.bashrc
+linkerd install | kubectl apply -f -
+\end{lstlisting}
+
+\subsection{Resource definition for applications}
+
+\subsection{Policy application}

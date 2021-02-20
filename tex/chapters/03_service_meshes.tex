@@ -25,13 +25,59 @@ In practice, the service mesh is typically implemented as an array of lightweigh
 
 The last sentence of the definition sounds promising: The developer no longer has to worry about the infrastructure tasks. In the context of this paper, it should become clear how decoupled the infrastructure layer actually is.
 
+\subsection{Sidecar pattern}
+
+According to the service mesh definition, lots of service mesh solutions take usage of the so-called Sidecar pattern to realize the network proxies. The Sidecar pattern is defined as follows:
+
+\begin{quote}
+``A sidecar is a software component that is co-located with 
+the primary application but runs on its own process or container, providing 
+a network interface to connect to it, which makes it language-agnostic. All 
+the core application functionalities are implemented as part of the main 
+application logic, while other commodity crosscutting features, which are not related to the business logic, are facilitated from the sidecar. Usually all the inbound and outbound communication of the application take place via the sidecar proxy." \cite[p. 266]{sm3}
+\end{quote}
+
+From the definition it is already clear that the communication is essentially controlled via the sidecar in order to pull the responsibility out of the application.
+
 \subsection{Architecture}
 \label{chap:mesh-architecture}
 
-Figure \ref{fig:overview} shows a simplified microservice architecture using service meshes. The mentioned infrastructure layer is a composition of the lightweight network proxies, also called sidecards. These sidecars control the entire network communication between the microservice instances. Without service mesh, each service must implement this interservice logic on its own, which compromises developer focus on business goals. The figure perfectly illustrates that application services are decoupled from interservice communication.
+Figure \ref{fig:overview} shows a simplified microservice architecture using service meshes. The mentioned infrastructure layer is a composition of the lightweight network proxies. These sidecars control the entire network communication between the microservice instances. Without service mesh, each service must implement this interservice logic on its own, which compromises developer focus on business goals. The figure perfectly illustrates that application services are decoupled from interservice communication.
 
 A more detailed illustration of a service mesh architecture is shown in figure \ref{fig:detailed mesh}. A service mesh consists of a control plane and a data plane.
 The control plane is responsible for administrative tasks. This is where, for example, system-wide authentication and authorization policies are configured and made available to the proxies. Furthermore, settings for circuit breaking, timeouts and load balancing are made here. The composition of all application services with their sidecar proxies is called data plane \cite{sm4}.
+
+\subsection{Worth of technology independence}
+
+Listing \ref{lst:java-cb} shows a short and simplified example for a dummy application that is wrapped by a circuit breaker. The problems with this approach are obvious: If one decides to disable mechanisms such as circuit breaking etc., this basically means that the implementation of the application has to be adapted, tested and re-deployed. This effort is not insignificant in large applications. 
+
+\begin{lstlisting}[basicstyle=\footnotesize ,language=java,caption={Circuit breaker example with Spring Cloud + Hystrix \cite{hystrix-ex}}, label={lst:java-cb}]
+@Service
+public class BookService {
+
+  private final RestTemplate restTemplate;
+
+  public BookService(RestTemplate rest) {
+    this.restTemplate = rest;
+  }
+
+  @HystrixCommand(fallbackMethod = "reliable")
+  public String readingList() {
+    URI uri = URI
+        .create("http://localhost:8090/recommended");
+
+    return this.restTemplate
+        .getForObject(uri, String.class);
+  }
+
+  public String reliable() {
+    return "Cloud Native Java (O'Reilly)";
+  }
+
+}
+\end{lstlisting}
+
+Microservices that use services meshes are technology-independent and can therefore do without libaries from, for example, the Netflix OSS stack. Keeping the option of technology independence open can even make sense if the entire application is written in a single language such as Java, for example. If you are thinking about deploying a new version or library, you could limit this to just a few services. The risk of breaking existing functionalities is thus limited, which makes it much easier to keep one's own stack modern. Netflix, for example, has discontinued support for Hystrix \cite{hystrix-eol}. Microservice operators that do not run a service mesh would now have to look for another framework and adapt the implementation of their services.
 
 \subsection{Central tasks}
 
@@ -54,7 +100,7 @@ The microservice application must not be overly dependent on individual replicas
 All communication between all microservices must be recorded and made visible, for example, via a central dashboard. In addition to logging, it makes sense to display metrics and statistics for the individual services.
 
 \subsubsection{Circuit breaking}
-Microservices need to be resilient. One way to do this is to implement the circuit breaker pattern. If recurring connection errors are detected for a resource, access to this resource is blocked by the circuit breaker so that it is not overloaded further.
+One of the difference between in-memory calls and remote calls is, that remote calls might fail due to connection problems or long-running operations that lead to a timeout. The solution for this problem is not to just avoid bugs, errors and connection problems: Microservices need to be resilient. One way to do this is to implement the circuit breaker pattern. If recurring connection errors are detected for a resource, access to this resource is blocked by the circuit breaker so that it is not overloaded further.
 
 \subsubsection{Authentication and access control}
 
@@ -68,8 +114,7 @@ With the use of a service mesh, it should be easy to apply and remove certain po
     \label{fig:microservice-without-mesh}
 \end{figure}
 
-
-To highlight the benefits of a services mesh, you need to imagine a microservice architecture without services meshes. Figure 4 illustrates that each microservice requires a significant amount of logic to enable interservice communication. The effort required to implement this logic multiplies if, for example, Circuit Breaker is required in Java, Node JS, and Python. Since the requirements for infrastructure logic are the same in almost all microservice applications, it only makes sense to map this logic to an abstracted layer. This is where the service mesh comes into play. According to \cite{sm4}, the further advantages and drawbacks of a service mesh are as follows:
+To highlight the benefits of a services mesh, you need to imagine a microservice architecture without services meshes. Figure 4 illustrates that each microservice requires a significant amount of logic to enable interservice communication. The effort required to implement this logic multiplies if, for example, Circuit Breaker is required in Java, Node.js, and Python. Since the requirements for infrastructure logic are the same in almost all microservice applications, it only makes sense to map this logic to an abstracted layer. This is where the service mesh comes into play. According to \cite{sm4}, the further advantages and drawbacks of a service mesh are as follows:
 
 \subsubsection{Advantages}
 

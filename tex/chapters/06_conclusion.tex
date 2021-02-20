@@ -1,0 +1,8 @@
+\section{Conclusion}
+
+The theoretical and practical discussion of service meshes gave us very good impressions of the advantages and disadvantages of using them.
+On the one hand, it is really very easy to apply or remove policies in the microservice architecture dynamically via customization of YAML resources. Powerful features such as circuit breaking, canary deployment, and centralized management ease the burden on both developers and operators of microservices architectures.
+
+The proof of concept we presented using \textsc{Linkerd} hinted at the strengths and weaknesses of service meshes. It would certainly be interesting to take another look at \textsc{Istio}, as it promises a wider range of functions despite its higher complexity.
+
+However, although \textsc{Linkerd} describes itself as lightweight, one aspect clearly emerged during the implementation of the proof of concept: The benefits of service meshes only come into play once the overall system is fully deployed. The creation of \textsc{Kubernetes} services and the commissioning of \textsc{Linkerd} require a high level of expert knowledge and effort. Consequently, it is rather utopian to integrate service meshes into a microservice landscape within a short time. However, once the first breakthrough has been achieved, the further development of new or existing microservices is comparatively more productive. The claim that developers can focus more on implementing the business logic is in line with our experience from dealing with \textsc{Linkerd}.
