@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: name-service
+  labels:
+    app: name-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: name-service
+  template:
+    metadata:
+      labels:
+        app: name-service
+    spec:
+      containers:
+      - image: ghcr.io/manuelottlik/name-service
+        imagePullPolicy: Always
+        name: name-service
+      imagePullSecrets:
+      - name: ghcr
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: name-service
+  labels:
+    app: name-service
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: name-service
+  sessionAffinity: None
+  type: ClusterIP
