@@ -1,3 +1,59 @@
 \section{Results}
 
 Put results of playing around with service mesh here...
+
+Showcases aus VI-B $\rightarrow$ konkret mit Linkerd (so sehen die hier aus)
+\begin{itemize}
+	\item Encryption: out-of-box mit Linkerd 
+	\begin{itemize}
+	\item falls nicht gewünscht, dann geht das so:
+	\begin{itemize}
+	\item \lstinline|linkerd install --disable-identity --disable-tap|
+	\end{itemize}
+	\item aber Achtung: dann ist nix verschlüsselt (Tap, metrics, etc.)
+	\end{itemize}
+	\item Canary
+	\item Access Policy
+	\item Load Balancing
+	\begin{itemize}
+	\item ist in Linkerd automatisch drin
+	\item falls ingress injected, nehmen wir den von Traefik
+	\begin{itemize}
+	\item Wie macht man das?
+	\item entweder im yaml
+	\item oder Allgemeinfür namespace/deployment oder pod: kubectl annotate namespace traefik linkerd.io/inject=enabled 
+	\end{itemize}
+	\item Monitoring and Logging
+	\begin{itemize}
+	\item Monitoring hatten wir schon ;)
+	\item Logging: Wurde abgeschafft, da zu ähnlich zu Kubectl (\url{https://github.com/linkerd/linkerd2/discussions/5790})
+	\item Wie macht mans?
+	\begin{itemize}
+	\item \lstinline|kubectl logs <pod> <service>|
+	\end{itemize}
+	\item hier ist die Bash-completion sehr hilfreich (siehe Anhang)
+	\item Man stößt immer auf Loki als Logging-Lösung
+	\begin{itemize}
+	\item lässt sich in Grafana einbinden
+	\end{itemize}
+\end{itemize}
+\end{itemize}
+\end{itemize}
+Pitfalls
+\begin{itemize}
+	\item Linkerd sagt, er braucht nur 2GB RAM 
+	\begin{itemize}
+	\item das hat uns nicht gereicht
+	\item mit 4 kommen wir ganz gut aus
+	\end{itemize}
+	\item Minikube
+	\begin{itemize}
+	\item eval… damit Image auch für Minikube bereitgestellt wird
+	\begin{itemize}
+	\item Bring some time...
+	\item use bash-completion
+	\item Use ssh-port-forwarding to communicate with dashboard on VPS
+\end{itemize}
+\end{itemize}
+\end{itemize}
+

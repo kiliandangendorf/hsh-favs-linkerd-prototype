@@ -56,6 +56,73 @@ echo "export PATH=$PATH:$HOME/.linkerd2/bin" \
 linkerd install | kubectl apply -f -
 \end{lstlisting}
 
+\begin{itemize}
+	\item Install linkerd
+\begin{itemize}
+	\item wir kümmern uns nicht um Verschlüsselung; das macht Linkerd
+	\item linkerd install | Kubectl apply -f -
+	\item ab diesem Moment mTSL aktiviert
+	\item Pipes
+\begin{itemize}
+	\item this is a usual workflow: Linkerd’s output is a yaml-file, that can be piped into Kubectl 
+\end{itemize}
+\end{itemize}
+	\item wie bekommen wir die µS's ins SM, 
+\begin{itemize}
+	\item similar to the installation we inject the Linkerd command:
+	\item injecten $\rightarrow$ schon im Text drin
+\begin{itemize}
+	\item entweder einzeln, 
+	\item oder für alle folgenden
+\end{itemize}
+	\item Linkerd parses the yaml file(s) and provides annotations.
+\begin{itemize}
+	\item Zeige Annotation in Listing
+\begin{itemize}
+	\item \lstinline|linkerd.io/inject: enabled|
+\end{itemize}
+\end{itemize}
+	\item resulting annotated yaml-file is given to Kubectl as parameter in file option (-f)
+\begin{itemize}
+	\item dies erzeugt Linkerd-Proxy
+\end{itemize}
+\end{itemize}
+	\item Kommunikation der µS
+\begin{itemize}
+	\item da im gleichen Namespace, kein Problem
+	\item K8s sorgt dafür, dass sie im selben Netz sind
+	\item erreichen durch K8s-DNS Namen
+\begin{itemize}
+	\item setzen sich immer so zusammen
+\end{itemize}
+	\item diese in yml setzen
+	\item Listing?
+	\item µS A kann nun die REST-API von µS B unter dieser DNS nutzen
+\end{itemize}
+	\item Monitoring kommt "out-of-box"
+\begin{itemize}
+	\item Linkerd kommt mit Prometheus und Grafana
+	\item Wir können sehen, wer mit wem wieviel redet
+	\item Bsp. Baum aus Linkerd? helloworld spricht mir nameapi?
+\end{itemize}
+	\item jetzt haben wir schon SM, mTLS und Monitoring 
+	\item Ingress Controller
+\begin{itemize}
+	\item wie kommen wir nun von außen an unserer Services?
+	\item wir brauchen einen Ingress Controller
+	\item as stated in V-B we chose Traefik
+	\item Der kann zwar mehr, aber mehr brauchen wir nicht 
+	\item nutzen ihn nur als remote proxy "vor" unseren Services
+	\item Wenn injected, nutzen wir Traefik auch als LoadBalancer
+\begin{itemize}
+	\item \url{https://linkerd.io/2/tasks/using-ingress/} $\rightarrow$ HONOR ;)
+\end{itemize}
+\end{itemize}
+	\item für Detail bzgl Installation und Nutzung bzw. siehe Repo (Anhang)
+\end{itemize}
+
+
+
 \subsection{Resource definition for applications}
 
 \subsection{Policy application}
