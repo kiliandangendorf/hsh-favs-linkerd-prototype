@@ -226,9 +226,22 @@ ssh -nNT -L 12345:127.0.0.1:38055 favs
 ```
 (The `-nNT` prevents the shell to be opened, since we only need the tunnel, not the remote shell.)
 
-Ex. Run `minikube dashboard` on the VPS and you can access via:  
-http://localhost:12345/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/  
-(Minikube changing its dashboard-port every time it starts :/)
+Ex. Run `linkerd dashboard &` on the VPS and you can access via:  
+http://localhost:12345/
+
+##### Use `LocalForward`
+Optionally you can also configure the `ssh_config` for local forward:
+```
+Host favs
+    Hostname 64.227.126.210
+    Port 57128
+    User favs
+    LocalForward 12345 localhost:50750
+```
+When you use the shell (`ssh favs`) it will automatically build up the local port-forwarding.
+If you start a second remote shell, there will be an info, that port is already bind (here: `12345`). 
+This is not a problem since the tunnel is already established.
+
 
 One slower alternative (but sometimes not avoidable) is the X11 Forwarding.
 
@@ -243,7 +256,7 @@ Ex. Run `minikube dashboard` on the VPS and you can access via:
 ```
 ssh -C -Y favs "firefox" "http://127.0.0.1:38055/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/"
 ```
-
+(Minikube changing its dashboard-port every time it starts :/)
 
 ## Installation
 
@@ -387,6 +400,38 @@ Validate installation:
 ```
 linkerd check
 ```
+
+
+### Bash-Completion
+
+It is very useful to install bash-completion for the above installed programs.
+Especially in `kubectl` you can compltete pod-names by pressing tab instead of typing huge pod-identifiers.
+
+If bash-completion is not already installed:
+```
+apt-get install bash-completion
+echo "source /etc/bash-completion" >> .bashrc 
+```
+
+To make completion available in every shell, we put each `source` command into the `.bashrc`.
+
+**Linkerd**
+```
+echo "source <(linkerd completion bash)" >> .bashrc 
+```
+(For older bash or other OS check how to to with: `linkerd completion --help`)
+
+**Minikube**
+```
+echo "source <(minikube completion bash)" >> .bashrc 
+```
+(For older bash or other OS check how to to with: `minikube completion --help`)
+
+**kubectl**
+```
+echo "source <(kubectl completion bash)" >> .bashrc 
+```
+(For older bash or other OS check how to to with: `kubectl completion --help`)
 
 
 

@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goodbye-world
+  labels:
+    app: goodbye-world
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: goodbye-world
+  template:
+    metadata:
+      labels:
+        app: goodbye-world
+    spec:
+      containers:
+      - image: ghcr.io/manuelottlik/goodbye-world-service
+        imagePullPolicy: Always
+        name: goodbye-world
+      imagePullSecrets:
+      - name: ghcr
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goodbye-world
+  labels:
+    app: goodbye-world
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: goodbye-world
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: goodbye-world
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /goodbye-world
+        pathType: Prefix
+        backend:
+          service:
+            name: goodbye-world
+            port:
+              number: 80
+n1116852@instance-1:~$ cat hws.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+  labels:
+    app: hello-world
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+      - image: ghcr.io/manuelottlik/hello-world-service
+        imagePullPolicy: Always
+        name: hello-world
+      imagePullSecrets:
+      - name: ghcr
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world
+  labels:
+    app: hello-world
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: hello-world
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-world
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "false"
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /hello-world
+        pathType: Prefix
+        backend:
+          service:
+            name: hello-world
+            port:
+              number: 80
