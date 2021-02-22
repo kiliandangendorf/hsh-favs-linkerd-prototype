@@ -82,7 +82,7 @@ This way all Services belonging to one deployment can be covered.
 \autoref{lst:linkerd-annotation} shows an extract of an annotated YAML file.
 It says, \linkerd{} will inject every Pod in this deployment with its proxies.
 
-\begin{lstlisting}[language=bash,caption={Extract of a Kubernetes manifest annotated by \textsc{Linkerd}.}, label={lst:linkerd-annotation}]
+\begin{lstlisting}[caption={Extract of a Kubernetes manifest annotated by \textsc{Linkerd}.}, label={lst:linkerd-annotation}]
 kind: Deployment
 spec:
 [...]
@@ -118,7 +118,7 @@ But from the view of the application it works the same way as before.
 	\item sure \textsc{Treafik} has much more functionality but we doesn't need
 	\item just use it as remote proxy in front of our services
 	\item Goodie: if we inject it by \linkerd{} it will be used as load balancer\\
-	\item \url{https://linkerd.io/2/tasks/using-ingress/}
+		\url{https://linkerd.io/2/tasks/using-ingress/}
 \end{itemize}
 
 for further details on the setup and usage, see appendix...
