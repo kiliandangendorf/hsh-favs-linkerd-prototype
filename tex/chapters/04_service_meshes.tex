@@ -14,7 +14,7 @@
     \label{fig:overview}
 \end{figure}
 
-As mentioned in the previous chapter, creating an appropriate microservices infrastructure tend to be more complicated than implementing the business logic itself. For this reason, there is a need for infrastructure solutions that relieve the developers of the business logic. A service mesh is one conceivable solution approach and is defined as follows:
+As mentioned in the previous chapter, creating a suitable microservices infrastructure tends to be more complicated than implementing the business logic itself. For this reason, there is a need for solutions in which infrastructure and business logic are separated in order to reduce the burden on the developer. A service mesh is one conceivable solution approach that also provides an interface which makes infrastructure tasks more comprehensible. It is defined as follows:
 
 \subsection{Definition}
 
@@ -23,7 +23,7 @@ As mentioned in the previous chapter, creating an appropriate microservices infr
 In practice, the service mesh is typically implemented as an array of lightweight network proxies that are deployed alongside application code, without the application needing to be aware." \cite[p. 123]{sm1}
 \end{quote}
 
-The last sentence of the definition sounds promising: The developer no longer has to worry about the infrastructure tasks. In the context of this paper, it should become clear how decoupled the infrastructure layer actually is.
+The last sentence of the definition sounds promising: The developer no longer has to worry about the infrastructure tasks. In the context of this paper it should become clear how decoupled the infrastructure layer actually is.
 
 \subsection{Sidecar pattern}
 
