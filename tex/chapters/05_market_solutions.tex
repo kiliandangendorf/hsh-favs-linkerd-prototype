@@ -19,7 +19,7 @@ As illustrated in figure \ref{fig:arch-istio}, \textsc{Istio} uses a basic contr
 \subsection{Linkerd}
 \label{linkerd}
 According to \textsc{Linkerd}'s documentation \cite{linkerd-docs-arch}, \textsc{Linkerd} also uses a basic control and data plane architecture, as explained in chapter \ref{chap:mesh-architecture}. It also uses the sidecar pattern, but has implemented an own proxy solution named \textsc{Linkerd2-proxy}. \textsc{Linkerd} developers rate \textsc{Envoy} as too complex \cite{linkerd-docs-no-envoy}, which is why they decided to implement their own solution, which they call a "micro-proxy". 
-Unlike \textsc{Istio}, \textsc{Linkerd} does not handle ingress traffic. It works in conjunction of every ingress controller of choice, e.g. \textsc{nginx} \cite{linkerd-docs-faq}.
+Unlike \textsc{Istio}, \textsc{Linkerd} does not handle ingress traffic. It works in conjunction of every ingress controller of choice, e.g. \textsc{nginx} or \textsc{traefik} \cite{linkerd-docs-faq}.
 
 As illustrated in figure \ref{fig:arch-linkerd}, each \textsc{linkerd-proxy} has access to two components: \textsc{identity} and \textsc{destination}.
 
@@ -91,5 +91,5 @@ cat deployment.yml | linkerd inject - \
 % TODO: WRITE STUFF
 % 
 
-In our prototypical implementation, we will use \textsc{Linkerd} as a service mesh technology. As table \ref{tab:istio-linkerd} clarifies, \textsc{Linkerd} seems to be less complex and more lightweight compared to \textsc{Istio}. One missing key feature of \textsc{Linkerd} is circuit breaking, which is requested by users and currently under development \cite{linkerd-circuit-breaker}. Nevertheless, \textsc{Istio} seems to be more powerful and mature, has more users and functionalities. Along with this, the pool of tutorials and documentation is also larger.
-We will choose \textsc{Linkerd} because of its lightweight nature. The setup of \textsc{Linkerd}'s hello world example looks pretty straight forward and suitable and appropriate for a proof of concept.
+As table \ref{tab:istio-linkerd} clarifies, \textsc{Linkerd} seems to be less complex and more lightweight compared to \textsc{Istio}. One missing key feature of \textsc{Linkerd} is circuit breaking, which is requested by users and currently under development \cite{linkerd-circuit-breaker}. Nevertheless, \textsc{Istio} seems to be more powerful and mature, has more users and functionalities. Along with this, the pool of tutorials and documentation is also larger.
+We will choose \textsc{Linkerd} because of its lightweight nature. The setup of \textsc{Linkerd}'s hello world example looks pretty straight forward and suitable and appropriate for a proof of concept. Since \textsc{Linkerd} suggests to use \textsc{traefik} as an ingress controller \cite{linkerd-traefik}, we will use it as well.
