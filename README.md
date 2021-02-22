@@ -389,6 +389,38 @@ linkerd check
 ```
 
 
+### Bash-Completion
+
+It is very useful to install bash-completion for the above installed programs.
+Especially in `kubectl` you can compltete pod-names by pressing tab instead of typing huge pod-identifiers.
+
+If bash-completion is not already installed:
+```
+apt-get install bash-completion
+echo "source /etc/bash-completion" >> .bashrc 
+```
+
+To make completion available in every shell, we put each `source` command into the `.bashrc`.
+
+**Linkerd**
+```
+echo "source <(linkerd completion bash)" >> .bashrc 
+```
+(For older bash or other OS check how to to with: `linkerd completion --help`)
+
+**Minikube**
+```
+echo "source <(minikube completion bash)" >> .bashrc 
+```
+(For older bash or other OS check how to to with: `minikube completion --help`)
+
+**kubectl**
+```
+echo "source <(kubectl completion bash)" >> .bashrc 
+```
+(For older bash or other OS check how to to with: `kubectl completion --help`)
+
+
 
 
 
