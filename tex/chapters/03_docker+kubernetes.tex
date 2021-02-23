@@ -1,18 +1,18 @@
 \section{Introduction to Docker and Kubernetes}
 
 According to Google Trends, one of the most widespread solutions for microservices is \textsc{Kubernetes}.
-To understand practical solutions of service meshes, it is very helpful to know how \textsc{Kubernetes} works. Since \textsc{Kubernetes} is often used together with \textsc{Docker}, this tool is also briefly explained.
+Since \textsc{Kubernetes} became a de-facto standard for these environments most service meshes are built upon \textsc{Kubernetes}. It is therefore mandatory to know how \textsc{Kubernetes} works in order to understand practical solutions of service meshes. Since \textsc{Kubernetes} relies on containers, this technology is also briefly explained.
 
-\subsection{Docker}
+\subsection{Containers}
 
-\textsc{Docker} is a tool to encapsulate applications in so-called containers. It is built on Linux user groups and namespaces. Compared to a virtual machine, \textsc{Docker} is much more lightweight. All containers on the same host machine share the operating system kernel. Therefore, the overhead of booting the operating system for each container is eliminated \cite[p. 220 ff.]{sm3}.
+Containers are built on Linux user groups and namespaces and essentialy encapsulate applications comparable to virtual machines. Compared to a virtual machine, containers are much more lightweight. All containers on the same host machine share the operating system kernel. Therefore, the overhead of booting the operating system for each container is eliminated \cite[p. 220 ff.]{sm3}.
 
-Microservices are often deployed as so-called \textsc{Docker} images. This is a package consisting of the application and all its dependencies. The application itself only has access to the dependencies running in the image. The build process of a \textsc{Docker} image is defined in a so-called \textsc{Dockerfile} \cite[p. 224]{sm3}.
+The most common container runtime engine is \textsc{Docker}, however \textsc{Kubernetes} does not rely on \textsc{Docker} as runtime engine. Nevertheless, the name has etched itself in the terminology of the container technology. Microservices are often deployed as so-called \textsc{Docker} images. This is a package consisting of the application and all its dependencies. The application itself only has access to the dependencies running in the image. The build process of a \textsc{Docker} image is defined in a so-called \textsc{Dockerfile} \cite[p. 224]{sm3}.
 
 \subsection{Kubernetes}
 
 \textsc{Kubernetes} provides a number of functions. It can be seen as a container platform, microservices platform and cloud platform.
-It is a common way to use container technologies nowadays. Containers are isolated; they do not have access to processes or file systems of the host or other containers.
+It is a common way to use container technologies nowadays. Containers are isolated; they do not have access to processes or file systems of the host or other containers. The big difference to previous ways of deploying software is its declarative way of defining infrastructure. All resources that make up the cluster are defined in YAML files and ensure a specific state when applied to the cluster.
 Advantages of container solutions are easy creation and deployment of container images that allow continuous integration, delivery and test. The role of \textsc{Kubernetes} is to manage and orchestrate these containers \cite{k8s}.
 
 The four main \textsc{Kubernetes} objects are important to understand the role of service meshes in the microservices context:
