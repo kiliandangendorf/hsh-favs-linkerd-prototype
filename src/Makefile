@@ -1,11 +1,12 @@
 apps:='apache' 'goodbyeworld' 'helloworld' 'nameapi'
+
 rebuild: 
 	@echo "rebuild"
 	sh docker-build.sh
-	kubectl delete -f microservices.yaml
-	kubectl delete -f infrastructure.yaml
+install:
 	kubectl apply -f infrastructure.yaml
 	kubectl apply -f microservices.yaml
+
 init: 
 	@eval $(minikube -p minikube docker-env)
 
@@ -21,6 +22,16 @@ ports:
 	minikube service goodbyeworld --url
 	minikube service helloworld --url
 	minikube service nameapi --url
+error: 
+	kubectl apply -f fault-injection.yaml
+
+clean: 
+	kubectl delete -f microservices.yaml
+	kubectl delete -f infrastructure.yaml
+	kubectl delete -f fault-injection.yaml
+update: clean rebuild install error
+
+
 #	@for app in $(apps) ; do \
 #		echo port $$app ; \
 #		minikube service $$app --url \

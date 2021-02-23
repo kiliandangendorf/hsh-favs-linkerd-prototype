@@ -198,7 +198,7 @@ metadata:
   name: goodbyeworld
   annotations:
     kubernetes.io/ingress.class: "traefik"
-    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+#    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
     ingress.kubernetes.io/custom-request-headers: l5d-dst-override:goodbyeworld.default.svc.cluster.local:80
 spec:
   rules:
