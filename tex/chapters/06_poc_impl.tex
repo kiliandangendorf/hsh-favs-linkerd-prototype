@@ -22,6 +22,7 @@ Our basic idea is to implement three simple microservice applications that commu
 Since Linkerd does not provide an own ingress controller (see chapter \ref{linkerd}), we use an external ingress controller named \textsc{traefik}.
 
 \subsection{Showcases}
+\label{sec:showcases-1}
 
 Our prototypical implementation aims to provide answers to the following five challenges of running and maintaining microservices.
 
@@ -47,78 +48,77 @@ The following sequence of bash commands shows the \textsc{Linkerd} installation 
 #!/bin/bash
 curl -sL https://run.linkerd.io/install \
 	| sh
-export PATH=$PATH:$HOME/.linkerd2/bin
 echo "export PATH=$PATH:$HOME/.linkerd2/bin" \
 	>> ~/.bashrc
 linkerd install | kubectl apply -f -
 \end{lstlisting}
+The first line downloads and runs the install-script which chooses the correct installation for running operating system and validates checksum before finally linking the executable for \linkerd{}-CLI.
+The second line exports installation path of \linkerd{} into the \lstinline|$PATH|-environment. 
+Finally line 3 uses the \linkerd{}-CLI and installs the control plane on the cluster.
+\lstinline|linkerd install| returns a Kubernetes manifest in YAML, which is "piped" into \lstinline|kubectl| to apply all contained control plane resources.
+
+From now the framework for our service mesh is done.
+All communication between \linkerd{}-proxies are encrypted by default.
+
+You may notice the use of the "pipe". 
+This is a usual workflow in \linkerd{}: The output is a YAML-file, that can be piped into \lstinline|kubectl|.
+
+\subsection{Adding Services into Linkerd}
+Until now the service mesh is ruled only by \linkerd{}s own services.
+To add a service, you start with a common Kubernetes-manifest in YAML.
+But instead of giving it to \lstinline|kubectl| directly, you "inject" a \linkerd{} command showed in \autoref{lst:linkerd-inject}.
+\begin{lstlisting}[language=bash,caption={Inject \textsc{Linkerd}-annotation into manifest.}, label={lst:linkerd-inject}]
+cat <config-yml> \
+	| linkerd inject - \
+	| kubectl apply -f -
+\end{lstlisting}
+Since \linkerd{}-CLI is in between these command, \lstinline|inject| parses the YAML and adds annotations to it.
+The annotated file is passed into \lstinline|kubectl| in the common way.
+\linkerd{}-CLI searches for deployments to annotate.
+This way all Services belonging to one deployment can be covered.
+\autoref{lst:linkerd-annotation} shows an extract of an annotated YAML file.
+It says, \linkerd{} will inject every Pod in this deployment with its proxies.
+
+\begin{lstlisting}[caption={Extract of a Kubernetes manifest annotated by \textsc{Linkerd}.}, label={lst:linkerd-annotation}]
+kind: Deployment
+spec:
+[...]
+	template:
+		metadata:
+			annotations:
+				linkerd.io/inject: enabled
+[...]				
+\end{lstlisting}
+ 
+\subsection{Communication between Services}
+
+In the Kubernetes-manifest the names of cluster, namespace and service is defined.
+From this the unique DNS-name is derived the following way:
+
+\begin{lstlisting}[caption={DNS-name of a local service in Kubernetes.}, label={lst:k8s-dns}]
+<svc-name>.<namespace>.svc.<cluster>.local
+\end{lstlisting}
+
+When calling this DNS-name, Kubernetes will dissolve corresponding Pod and redirect the request accordingly.
+This way an application A can easily access the API of an application B within the same namespace under its DNS-name.
+And this holds even with service mesh.
+\linkerd{} wraps each application into a Pod next to \linkerd{}-proxy.
+Communication between Services is now routed via these proxies through the service mesh.
+But from the view of the application it works the same way as before.
+
+\subsection{\traefik{} as Ingress Controller}
 
 \begin{itemize}
-	\item Install linkerd
-\begin{itemize}
-	\item wir kümmern uns nicht um Verschlüsselung; das macht Linkerd
-	\item linkerd install | Kubectl apply -f -
-	\item ab diesem Moment mTSL aktiviert
-	\item Pipes
-\begin{itemize}
-	\item this is a usual workflow: Linkerd’s output is a yaml-file, that can be piped into Kubectl 
-\end{itemize}
-\end{itemize}
-	\item wie bekommen wir die µS's ins SM, 
-\begin{itemize}
-	\item similar to the installation we inject the Linkerd command:
-	\item injecten $\rightarrow$ schon im Text drin
-\begin{itemize}
-	\item entweder einzeln, 
-	\item oder für alle folgenden
-\end{itemize}
-	\item Linkerd parses the yaml file(s) and provides annotations.
-\begin{itemize}
-	\item Zeige Annotation in Listing
-\begin{itemize}
-	\item \lstinline|linkerd.io/inject: enabled|
-\end{itemize}
-\end{itemize}
-	\item resulting annotated yaml-file is given to Kubectl as parameter in file option (-f)
-\begin{itemize}
-	\item dies erzeugt Linkerd-Proxy
-\end{itemize}
-\end{itemize}
-	\item Kommunikation der µS
-\begin{itemize}
-	\item da im gleichen Namespace, kein Problem
-	\item K8s sorgt dafür, dass sie im selben Netz sind
-	\item erreichen durch K8s-DNS Namen
-\begin{itemize}
-	\item setzen sich immer so zusammen
-\end{itemize}
-	\item diese in yml setzen
-	\item Listing?
-	\item µS A kann nun die REST-API von µS B unter dieser DNS nutzen
-\end{itemize}
-	\item Monitoring kommt "out-of-box"
-\begin{itemize}
-	\item Linkerd kommt mit Prometheus und Grafana
-	\item Wir können sehen, wer mit wem wieviel redet
-	\item Bsp. Baum aus Linkerd? helloworld spricht mir nameapi?
-\end{itemize}
-	\item jetzt haben wir schon SM, mTLS und Monitoring 
-	\item Ingress Controller
-\begin{itemize}
-	\item wie kommen wir nun von außen an unserer Services?
-	\item wir brauchen einen Ingress Controller
-	\item as stated in V-B we chose Traefik
-	\item Der kann zwar mehr, aber mehr brauchen wir nicht 
-	\item nutzen ihn nur als remote proxy "vor" unseren Services
-	\item Wenn injected, nutzen wir Traefik auch als LoadBalancer
-\begin{itemize}
-	\item \url{https://linkerd.io/2/tasks/using-ingress/} $\rightarrow$ HONOR ;)
-\end{itemize}
-\end{itemize}
-	\item für Detail bzgl Installation und Nutzung bzw. siehe Repo (Anhang)
+	\item How do we reach our services from outside?
+	\item With an ingress controller
+	\item as stated in \autoref{linkerd} we chose \textsc{Traefik}
+	\item sure \textsc{Treafik} has much more functionality but we doesn't need
+	\item just use it as remote proxy in front of our services
+	\item Goodie: if we inject it by \linkerd{} it will be used as load balancer\\
+		\url{https://linkerd.io/2/tasks/using-ingress/}
 \end{itemize}
 
-
+for further details on the setup and usage, see appendix...
 
 \subsection{Resource definition for applications}
 
