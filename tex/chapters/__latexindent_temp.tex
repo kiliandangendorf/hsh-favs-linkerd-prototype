@@ -1,25 +1,6 @@
 \section{Solutions on the market}
 
-The following chapter presents the two most popular solutions used in the context of service meshes: \textsc{Istio} and \textsc{Linkerd}. Both technology solutions have in common that they are based on \textsc{Kubernetes}. While \textsc{Linkerd} requires \textsc{Kubernetes}, \textsc{Istio} could also rely on virtual machines. To understand practical solutions of service meshes, it is very helpful to know how \textsc{Kubernetes} works. Since \textsc{Kubernetes} is often used together with \textsc{Docker}, this tool is also briefly explained.
-
-\subsection{Docker}
-
-\textsc{Docker} is a tool to encapsulate applications in so-called containers. It is built on Linux user groups and namespaces. Compared to a virtual machine, \textsc{Docker} is much more lightweight. All containers on the same host machine share the operating system kernel. Therefore, the overhead of booting the operating system for each container is eliminated \cite[p. 220 ff.]{sm3}.
-
-Microservices are often deployed as so-called \textsc{Docker} images. This is a package consisting of the application and all its dependencies. The application itself only has access to the dependencies running in the image. The build process of a \textsc{Docker} image is defined in a so-called \textsc{Dockerfile} \cite[p. 224]{sm3}.
-
-\subsection{Kubernetes}
-
-\textsc{Kubernetes} provides a number of functions. It can be seen as a container platform, microservices platform and cloud platform.
-It is a common way to use container technologies nowadays. Containers are isolated; they do not have access to processes or file systems of the host or other containers.
-Advantages of container solutions are easy creation and deployment of container images that allow continuous integration, delivery and test. The role of \textsc{Kubernetes} is to manage and orchestrate these containers \cite{k8s}.
-
-The four main \textsc{Kubernetes} objects are important to understand the role of service meshes in the microservices context:
-\begin{itemize}
-\item Pods: Pods are the smallest deployable unit that \textsc{Kubernetes} manages. A pod is one or a group of multiple containers that share storage and network resources.
-\item Namespaces: Pods can be grouped into what are called namespaces. These represent a kind of virtual cluster. This already represents a kind of security concept. By default, a service from namespace A cannot communicate with a service from namespace B without explicit configuration.
-\item Labels: Each \textsc{Kubernetes} deployment can be attached with an arbitrary amount of labels. These labels are simple key/value pairs that allow to group objects in \textsc{Kubernetes} into subsets \cite{k8s}.
-\end{itemize}
+The following chapter presents the two most popular solutions used in the context of service meshes: \textsc{Istio} and \textsc{Linkerd}. Both technology solutions have in common that they are based on \textsc{Kubernetes}. While \textsc{Linkerd} requires \textsc{Kubernetes}, \textsc{Istio} could also rely on virtual machines.
 
 Service meshes that use \textsc{Kubernetes} extend the functionality by abstracting concepts like automatic sidecar injection. This would be also possible without service meshes, but significantly more complex and less automated.
 
@@ -38,7 +19,7 @@ As illustrated in figure \ref{fig:arch-istio}, \textsc{Istio} uses a basic contr
 \subsection{Linkerd}
 \label{linkerd}
 According to \textsc{Linkerd}'s documentation \cite{linkerd-docs-arch}, \textsc{Linkerd} also uses a basic control and data plane architecture, as explained in chapter \ref{chap:mesh-architecture}. It also uses the sidecar pattern, but has implemented an own proxy solution named \textsc{Linkerd2-proxy}. \textsc{Linkerd} developers rate \textsc{Envoy} as too complex \cite{linkerd-docs-no-envoy}, which is why they decided to implement their own solution, which they call a "micro-proxy". 
-Unlike \textsc{Istio}, \textsc{Linkerd} does not handle ingress traffic. It works in conjunction of every ingress controller of choice, e.g. \textsc{nginx} \cite{linkerd-docs-faq}.
+Unlike \textsc{Istio}, \textsc{Linkerd} does not handle ingress traffic. It works in conjunction of every ingress controller of choice, e.g. \textsc{nginx} or \textsc{traefik} \cite{linkerd-docs-faq}.
 
 As illustrated in figure \ref{fig:arch-linkerd}, each \textsc{linkerd-proxy} has access to two components: \textsc{identity} and \textsc{destination}.
 
@@ -102,7 +83,8 @@ kubectl label namespace default \
 
 \begin{lstlisting}[language=bash,caption={Injection of sidecards into a deployment in \textsc{Linkerd}}, label={lst:linkerd}]
 #!/bin/bash
-cat deployment.yml | linkerd inject - \
+cat deployment.yml \
+	| linkerd inject - \
 	| kubectl apply -f -
 \end{lstlisting}
 
@@ -110,5 +92,5 @@ cat deployment.yml | linkerd inject - \
 % TODO: WRITE STUFF
 % 
 
-In our prototypical implementation, we will use \textsc{Linkerd} as a service mesh technology. As table \ref{tab:istio-linkerd} clarifies, \textsc{Linkerd} seems to be less complex and more lightweight compared to \textsc{Istio}. One missing key feature of \textsc{Linkerd} is circuit breaking, which is requested by users and currently under development \cite{linkerd-circuit-breaker}. Nevertheless, \textsc{Istio} seems to be more powerful and mature, has more users and functionalities. Along with this, the pool of tutorials and documentation is also larger.
-We will choose \textsc{Linkerd} because of its lightweight nature. The setup of \textsc{Linkerd}'s hello world example looks pretty straight forward and suitable and appropriate for a proof of concept.
+As table \ref{tab:istio-linkerd} clarifies, \textsc{Linkerd} seems to be less complex and more lightweight compared to \textsc{Istio}. One missing key feature of \textsc{Linkerd} is circuit breaking, which is requested by users and currently under development \cite{linkerd-circuit-breaker}. Nevertheless, \textsc{Istio} seems to be more powerful and mature, has more users and functionalities. Along with this, the pool of tutorials and documentation is also larger.
+We will choose \textsc{Linkerd} because of its lightweight nature. The setup of \textsc{Linkerd}'s hello world example looks pretty straight forward and suitable and appropriate for a proof of concept. Since \textsc{Linkerd} suggests to use \textsc{traefik} as an ingress controller \cite{linkerd-traefik}, we will use it as well.
