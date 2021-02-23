@@ -26,6 +26,28 @@ spec:
         - containerPort: 8080
         resources: {}
 status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: goodbyeworldv2
+  name: goodbyeworldv2
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+    name: http    
+  selector:
+    app: goodbyeworldv2
+  type: NodePort
+status:
+  loadBalancer: {}
+
 ---
 
 apiVersion: v1
@@ -49,6 +71,6 @@ spec:
   service: goodbyeworld
   backends:
   - service: goodbyeworld
-    weight: 500m
+    weight: 900m
   - service: goodbyeworldv2
-    weight: 500m
+    weight: 100m
