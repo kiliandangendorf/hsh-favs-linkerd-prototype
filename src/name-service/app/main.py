@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.get("/items/{item_id}")
+@app.get("/nameapi/{item_id}")
 def read_item(item_id: int, q: Optional[str] = None):
     if item_id == 1:
         return {"item_id": item_id, "name": "Kilian"}

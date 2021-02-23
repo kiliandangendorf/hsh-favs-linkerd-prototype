@@ -4,8 +4,14 @@ var app = express()
 //Define request response in root URL (/) and response with text Hello World!
 app.get('/', function (req, res) {
   console.log('get')
-  res.send('Goodbye World!')
+  res.send('Goodbye short World!')
 })
+
+app.get('/goodbyeworld/', function (req, res) {
+  console.log('get')
+  res.send('Goodbye long long World!')
+})
+
 
 // POST method route
 app.post('/', function (req, res) {
