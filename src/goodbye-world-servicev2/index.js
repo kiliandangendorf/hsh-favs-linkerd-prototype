@@ -12,7 +12,7 @@ app.get('/', function (req, res) {
 
 app.get('/goodbyeworld/', function (req, res) {
   console.log('get')
-  res.send('Goodbye long long World!')
+  res.send('Goodbye long v2 long World!')
 })
 
 app.get('/goodbyeworld/v2/:id', function (req, res) {
@@ -25,7 +25,7 @@ app.get('/goodbyeworld/v2/:id', function (req, res) {
   fetch('http://nameapi.default.svc.cluster.local:80/nameapi/'+id)
     .then(checkStatus)
     .then(res1 => res1.json())
-    .then(json => res.send("Goodbye world v1 "+ res1.json().name));
+    .then(json => res.send("Goodbye world v2 "+ res1.json().name));
 
 //res => res.json())
 //    .then(json => res.send('Goodbye World '+json.name));

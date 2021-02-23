@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: goodbyeworldv2
+    version: "1.0"
+  name: goodbyeworldv2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goodbyeworldv2
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: goodbyeworldv2
+    spec:
+      containers:
+      - name: goodbyeworldv2
+        image: microservice-linkerd-goodbyeworld:2
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        resources: {}
+status: {}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bluegreen
+spec:
+  ports:
+  - name: service
+    port: 80
+  selector:
+    app: bluegreen
+
+---
+
+apiVersion: split.smi-spec.io/v1alpha1
+kind: TrafficSplit
+metadata:
+  name: bluegreen
+spec:
+  service: goodbyeworld
+  backends:
+  - service: goodbyeworld
+    weight: 500m
+  - service: goodbyeworldv2
+    weight: 500m

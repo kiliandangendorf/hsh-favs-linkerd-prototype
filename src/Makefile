@@ -25,11 +25,15 @@ ports:
 error: 
 	kubectl apply -f fault-injection.yaml
 
+bg:
+	kubectl apply -f bluegreen.yaml
+
 clean: 
 	kubectl delete -f microservices.yaml
 	kubectl delete -f infrastructure.yaml
-	kubectl delete -f fault-injection.yaml
-update: clean rebuild install error
+	kubectl delete -f bluegreen.yaml
+#	kubectl delete -f fault-injection.yaml
+update: clean rebuild install bg
 
 
 #	@for app in $(apps) ; do \
