@@ -2,7 +2,7 @@ name: build hello-world service
 on:
   push:
     paths:
-      - "src/hello-world-service/**"
+      - "src/docker/helloworld/**"
       - ".github/**"
   workflow_dispatch:
 
