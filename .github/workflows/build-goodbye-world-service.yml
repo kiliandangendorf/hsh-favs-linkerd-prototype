@@ -2,7 +2,7 @@ name: build goodbye-world service
 on:
   push:
     paths:
-      - "src/goodbye-world-service/**"
+      - "src/docker/goodbyeworld/**"
       - ".github/**"
   workflow_dispatch:
 
