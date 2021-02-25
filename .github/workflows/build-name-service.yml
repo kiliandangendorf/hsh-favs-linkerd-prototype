@@ -2,7 +2,7 @@ name: build name service
 on:
   push:
     paths:
-      - "src/name-service/**"
+      - "src/docker/nameapi/**"
       - ".github/**"
   workflow_dispatch:
 
