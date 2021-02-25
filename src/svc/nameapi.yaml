@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nameapi
+    version: "1.0"
+  name: nameapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nameapi
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nameapi
+    spec:
+      containers:
+      - name: nameapi
+        image: microservice-linkerd-nameapi:1
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+        resources: {}
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nameapi
+  name: nameapi
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    name: http    
+  selector:
+    app: nameapi
+  type: NodePort
+status:
+  loadBalancer: {}
+
