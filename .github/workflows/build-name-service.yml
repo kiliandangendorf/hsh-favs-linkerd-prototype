@@ -22,7 +22,7 @@ jobs:
           IMAGE_NAME: name-service
           IMAGE_TAG: latest
         run: |
-          cd src/name-service
+          cd src/docker/nameapi
           docker login -u publisher -p $REGISTRY_TOKEN $REGISTRY_URL
           docker build -t $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG .
           docker push $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG
