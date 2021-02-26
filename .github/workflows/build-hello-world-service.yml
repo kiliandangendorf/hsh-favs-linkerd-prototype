@@ -22,7 +22,7 @@ jobs:
           IMAGE_NAME: hello-world-service
           IMAGE_TAG: latest
         run: |
-          cd src/hello-world-service
+          cd src/docker/helloworld
           docker login -u publisher -p $REGISTRY_TOKEN $REGISTRY_URL
           docker build -t $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG .
           docker push $REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG
