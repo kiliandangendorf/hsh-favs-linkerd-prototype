@@ -18,26 +18,15 @@ Chapter \ref{chap:microservices} may have already given the impression that deve
 
 \subsection{Definition}
 
-\begin{quote}
-``A service mesh is a dedicated infrastructure layer for handling service-to-service communication. It’s responsible for the reliable delivery of requests through the complex topology of services that comprise a modern, cloud native application.
-In practice, the service mesh is typically implemented as an array of lightweight network proxies that are deployed alongside application code, without the application needing to be aware." \cite[p. 123]{sm1}
-\end{quote}
+According to \cite{sm1}, a service mesh is a dedicated infrastructure layer which handles inter-service communication. This infrastructure layer is basically a composition of several lightweight network proxies, so-called sidecars. This pattern is explained in the next chapter.  Furthermore, a service mesh is responsible for reliably delivering requests in a complex microservice topology.
 
-The last sentence of the definition sounds promising: The developer no longer has to worry about the infrastructure tasks. In the context of this paper it should become clear how decoupled the infrastructure layer actually is.
+The idea of service meshes sounds very promising: The developer no longer has to worry about the infrastructure tasks. In the context of this paper it should become clear how decoupled the infrastructure layer actually is.
 
 \subsection{Sidecar Pattern}
 
-According to the service mesh definition, lots of service mesh solutions take usage of the so-called Sidecar pattern to realize the network proxies. The Sidecar pattern is defined as follows:
+According to the service mesh definition, lots of service mesh solutions take usage of the so-called Sidecar pattern to realize the network proxies.
 
-\begin{quote}
-``A sidecar is a software component that is co-located with 
-the primary application but runs on its own process or container, providing 
-a network interface to connect to it, which makes it language-agnostic. All 
-the core application functionalities are implemented as part of the main 
-application logic, while other commodity crosscutting features, which are not related to the business logic, are facilitated from the sidecar. Usually all the inbound and outbound communication of the application take place via the sidecar proxy." \cite[p. 266]{sm3}
-\end{quote}
-
-From the definition it is already clear that the communication is essentially controlled via the sidecar in order to pull the responsibility out of the application.
+According to a Sidecar pattern definition from \cite{sm3}, a sidecar is a software component that is located alongside the actual software, but runs within a dedicated process. All logic that is not part of the business logic is handled by the sidecar. Typically, the sidecar also handles incoming and outgoing communication. This is a good approach for clean separation of concerns.
 
 \subsection{Architecture}
 \label{chap:mesh-architecture}
