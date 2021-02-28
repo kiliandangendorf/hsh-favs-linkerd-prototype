@@ -1,4 +1,4 @@
-\section{Prototypical service mesh implementation}
+\section{Prototypical Service Mesh Implementation}
 
 The following chapter describes our concept of our prototypical service mesh implementation and its outcome. In order to also practically work out the differences between service meshes and a traditional microservice operation, we will initially run our application using only Kubernetes, and then later set up a service mesh.
 
@@ -38,7 +38,7 @@ To provide an example showcase for canary deployment, we implemented two version
 
 Another restriction is that the \textsc{name-service} is only accessible from the \textsc{hello-world-service}. Access restriction should not be a task of the actual \textsc{name-service} application. We want to show that access to services is easily managable via YAML resources.
 
-\subsubsection{Central monitoring and logging}
+\subsubsection{Central Monitoring and Logging}
 The proof of concept should show that services in a microservice landscape can be monitored and managed centrally using the service mesh.
 
 \subsection{Setup of Linkerd}
@@ -120,6 +120,6 @@ But from the view of the application it works the same way as before.
 
 for further details on the setup and usage, see appendix...
 
-\subsection{Resource definition for applications}
+\subsection{Resource Definition for Applications}
 
-\subsection{Policy application}
+\subsection{Policy Application}

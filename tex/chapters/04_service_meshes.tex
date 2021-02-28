@@ -25,7 +25,7 @@ In practice, the service mesh is typically implemented as an array of lightweigh
 
 The last sentence of the definition sounds promising: The developer no longer has to worry about the infrastructure tasks. In the context of this paper it should become clear how decoupled the infrastructure layer actually is.
 
-\subsection{Sidecar pattern}
+\subsection{Sidecar Pattern}
 
 According to the service mesh definition, lots of service mesh solutions take usage of the so-called Sidecar pattern to realize the network proxies. The Sidecar pattern is defined as follows:
 
@@ -47,7 +47,7 @@ Figure \ref{fig:overview} shows a simplified microservice architecture using ser
 A more detailed illustration of a service mesh architecture is shown in figure \ref{fig:detailed mesh}. A service mesh consists of a control plane and a data plane.
 The control plane is responsible for administrative tasks. This is where, for example, system-wide authentication and authorization policies are configured and made available to the proxies. Furthermore, settings for circuit breaking, timeouts and load balancing are made here. The composition of all application services with their sidecar proxies is called data plane \cite{sm4}.
 
-\subsection{Worth of technology independence}
+\subsection{Worth of Technology Independence}
 
 Listing \ref{lst:java-cb} shows a short and simplified example for a dummy application that is wrapped by a circuit breaker. The problems with this approach are obvious: If one decides to disable mechanisms such as circuit breaking etc., this basically means that the implementation of the application has to be adapted, tested and re-deployed. This effort is not insignificant in large applications. 
 
@@ -79,34 +79,34 @@ public class BookService {
 
 Microservices that use services meshes are technology-independent and can therefore do without libaries from, for example, the Netflix OSS stack. Keeping the option of technology independence open can even make sense if the entire application is written in a single language such as Java, for example. If you are thinking about deploying a new version or library, you could limit this to just a few services. The risk of breaking existing functionalities is thus limited, which makes it much easier to keep one's own stack modern. Netflix, for example, has discontinued support for Hystrix \cite{hystrix-eol}. Microservice operators that do not run a service mesh would now have to look for another framework and adapt the implementation of their services.
 
-\subsection{Central tasks}
+\subsection{Central Tasks}
 
 Each service mesh has specific tasks to solve to enable microservice operation. These are named and briefly introduced below \cite{sm1}:
 
-\subsubsection{Service discovery}
+\subsubsection{Service Discovery}
 
 The number of service instances and the states and configurations change more frequently. For this reason, middleware is required to serve as an intermediary. It would be very complicated if every service A had to know under which IP and which port it can reach service B.
 
-\subsubsection{Load balancing}
+\subsubsection{Load Balancing}
 
 A load balancer is necessary to skillfully distribute requests to a service among replicas when loads are higher.
 
-\subsubsection{Fault tolerance}
+\subsubsection{Fault Tolerance}
 
 The microservice application must not be overly dependent on individual replicas being in a faulty state. For this reason, the service mesh must solve the task of forwarding requests only to services that have a sufficient health state.
 
-\subsubsection{Traffic monitoring}
+\subsubsection{Traffic Monitoring}
 
 All communication between all microservices must be recorded and made visible, for example, via a central dashboard. In addition to logging, it makes sense to display metrics and statistics for the individual services.
 
-\subsubsection{Circuit breaking}
+\subsubsection{Circuit Breaking}
 One of the difference between in-memory calls and remote calls is, that remote calls might fail due to connection problems or long-running operations that lead to a timeout. The solution for this problem is not to just avoid bugs, errors and connection problems: Microservices need to be resilient. One way to do this is to implement the circuit breaker pattern. If recurring connection errors are detected for a resource, access to this resource is blocked by the circuit breaker so that it is not overloaded further.
 
-\subsubsection{Authentication and access control}
+\subsubsection{Authentication and Access Control}
 
 With the use of a service mesh, it should be easy to apply and remove certain policies for authentication and authorization. One such policy could be that access to Service A, which provides the database logic, is only allowed by Service B and no one else.
 
-\subsection{Opportunities and risks}
+\subsection{Opportunities and Risks}
 
 \begin{figure}
     \includegraphics[width=\columnwidth]{img/microservices_without_mesh.JPG}
