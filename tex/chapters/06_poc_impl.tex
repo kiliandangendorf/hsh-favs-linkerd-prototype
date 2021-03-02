@@ -10,6 +10,7 @@ The following chapter describes our concept of our prototypical service mesh imp
 \end{figure*}
 
 \subsection{Services}
+\label{sec:services}
 
 Our basic idea is to implement three simple microservice applications that communicate via REST. To prove technology independence, one service is written in Node.js, while the other two services are written in Python. Another requirement to meet is that the services have to be as simple as possible. Furthermore, the functionality of the services is intended to be as follows:
 
@@ -100,7 +101,7 @@ From this the unique DNS-name is derived the following way:
 \end{lstlisting}
 
 When calling this DNS-name, Kubernetes will dissolve corresponding Pod and redirect the request accordingly.
-This way an application A can easily access the API of an application B within the same namespace under its DNS-name.
+This way an application A can easily access the API of an application B within the same cluster under its DNS-name.
 And this holds even with service mesh.
 \linkerd{} wraps each application into a Pod next to \linkerd{}-proxy.
 Communication between Services is now routed via these proxies through the service mesh.
@@ -108,18 +109,40 @@ But from the view of the application it works the same way as before.
 
 \subsection{\traefik{} as Ingress Controller}
 
-\begin{itemize}
-	\item How do we reach our services from outside?
-	\item With an ingress controller
-	\item as stated in \autoref{linkerd} we chose \textsc{Traefik}
-	\item sure \textsc{Treafik} has much more functionality but we doesn't need
-	\item just use it as remote proxy in front of our services
-	\item Goodie: if we inject it by \linkerd{} it will be used as load balancer\\
-		\url{https://linkerd.io/2/tasks/using-ingress/}
-\end{itemize}
+How do we reach our services from outside?
+Therefore we need an ingress controller.
+As stated in \autoref{linkerd} we chose \traefik{}.
+Sure, \traefik{} could cope quite more than an ingress, but we will only use its remote proxy functionality here.
+\autoref{lst:ingress-hello} shows the configuration file for the ingress route \lstinline|/helloworld| to the corresponding \textsc{hello-world-service} as stated in \autoref{sec:services}.
+Again the interesting part is in the metadata annotation.
+First we tell Kubernetes to use \traefik{} as ingress controller.
+Second we route all traffic to the corresponding \linkerd{}-sidecar (abbreviated here in Kubernetes-style with \lstinline|l5d|).
+This configuration allows us to use different routes for different services by calling another path in the URL.
+Analog route we defined for \textsc{goodbye-world-service}.
 
-for further details on the setup and usage, see appendix...
+\begin{lstlisting}[caption={YAML configuration of \lstinline|helloworld|-ingress controller.}, label={lst:ingress-hello}]]
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+	name: helloworld
+	annotations:
+		kubernetes.io/ingress.class: "traefik"
+		ingress.kubernetes.io/
+			custom-request-headers: 
+			l5d-dst-override:helloworld.default
+			.svc.cluster.local:80
+spec:
+	rules:
+	- http:
+		paths:
+		- path: /helloworld
+			backend:
+			serviceName: helloworld
+			servicePort: 80
+\end{lstlisting}
 
-\subsection{Resource Definition for Applications}
+Now that the infrastructure is in place, we care about implementation of the showcases.
 
-\subsection{Policy Application}
+%\subsection{Resource Definition for Applications}
+
+%\subsection{Policy Application}
