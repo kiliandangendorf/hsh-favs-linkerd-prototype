@@ -33,7 +33,8 @@ By using a service mesh, it should be shown that an encryption policy can be eas
 
 \subsubsection{Canary Deployment}
 
-To provide an example showcase for canary deployment, we implemented two versions of \textsc{goodbye-world-service} which differ minimally by the returned string. The mesh is tasked with redirecting traffic so that 90\% of all requests are made to version 1 and 10\% of requests are made to version 2.
+To provide an example showcase for canary deployment, we implemented two versions of \textsc{name-service} which differ by the returned string (version 1 returns only forename while version 2 returns surname as well).
+The mesh is tasked with redirecting traffic so that 90\% of all requests are made to version 1 and 10\% of requests are made to version 2.
 
 \subsubsection{Access Policies}
 
