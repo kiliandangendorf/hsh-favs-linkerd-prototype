@@ -13,7 +13,7 @@ This is what the showcases called in \autoref{sec:showcases-1} look like with \l
 \subsubsection{Encryption}
 From the second that a service is injected by \linkerd{} and applied to the cluster, all communication to that service is automatically encrypted.
 This holds not only for our self-implemented communication but also for metrics- and tap-services.
-Since the communication is proxied by \linkerd{} it activates certificate distribution and encryption out of box.
+Since the communication is proxied by \linkerd{} it activates certificate distribution and encryption out-of-box.
 
 If you don't want to use this feature, you can disable by overwriting the \linkerd{} configuration.
 The following command will generate an updated YAML-configuration you can apply in Kubernetes.
@@ -22,22 +22,23 @@ linkerd install \
   --disable-identity \
   --disable-tap
 \end{lstlisting}
-Note: Once this configuration is applied, the will be neither encryption in communication between services nor in tap- and metrics-services.
+Note: Once this configuration is applied, there will be no encryption neither in communication between services nor in tap- and metrics-services.
 
 \subsubsection{Canary Deployment}
 \label{sec:canary-result}
-TBD
+In first place we have to deploy a new version of the \textsc{name-service} next to the existing one.
+The deployment is done the same way but with a different name (\lstinline|nameapi-v2|).
+New Version of \textsc{name-service} is similar to the old one but returns a different string (forename \textit{and} surname) while API stays the same.
+There are no changes in \textsc{hello-world-service} necessary.
 
--new service called \lstinline|nameapi-v2|
+Until now the new version is not used.
+We have to define a traffic split showed in \autoref{lst:traffic-split}.
 
--doing the same but printing the surname also.
-
-\begin{lstlisting}
+\begin{lstlisting}[caption={YAML configuration of 90/10 traffic split. 90\% of requests are routed to \lstinline|nameapi| and 10\% to \lstinline|nameapi-v2|.}, label={lst:traffic-split}]
 apiVersion: split.smi-spec.io/v1alpha1
 kind: TrafficSplit
 metadata:
 	name: nameapi-split
-	namespace: default
 spec:
 	service: nameapi
 	backends:
@@ -47,24 +48,31 @@ spec:
 		weight: 10
 \end{lstlisting}
 
+In the \lstinline|spec|-section we define two backends for the service \lstinline|nameapi|.
+The argument \lstinline|weight| defines a split ratio.
+90\% of traffic should be routed to the existing service with the name \lstinline|nameapi|, 10\% to the new one \lstinline|nameapi-v2|.
 
-\autoref{fig:results-traffic-split-tree}
+Right after applying this configuration, \linkerd{} dashboard shows a new section for traffic splits.
+In \autoref{fig:results-traffic-split-weights} \linkerd{} visualizes the routed requests.
+We can see the defined weights and the current requests per second (RPS), that are split according.
 
 \begin{figure}
-	\includegraphics[width=.5\columnwidth]{img/results-traffic-split-tree}
+	\includegraphics[width=\columnwidth]{img/results-traffic-split-weights}
+	\caption{\linkerd{} dashboard displays the weights of the 90/10 traffic split.}
+	\label{fig:results-traffic-split-weights}
+\end{figure}
+
+The \textsc{hello-world-service} stays unchanged, but requests the new version of \textsc{name-service} every tenth request without knowing.
+The deployment section of \textsc{hello-world-service} in \linkerd{} dashboard now renders a delegation tree pictured in \autoref{fig:results-traffic-split-tree} showing that \textsc{hello-world-service} requests both versions of \textsc{name-service}.
+
+\begin{figure}
+	\includegraphics[width=.4\columnwidth]{img/results-traffic-split-tree}
 	\centering
-	\caption{Delegation tree of \textsc{hello-world-service} after traffic split 90/10.}
+	\caption{Delegation tree of \textsc{hello-world-service} after traffic split.}
 	\label{fig:results-traffic-split-tree}
 \end{figure}
 
 
-\autoref{fig:results-traffic-split-weights}
-
-\begin{figure}
-	\includegraphics[width=\columnwidth]{img/results-traffic-split-weights}
-	\caption{\linkerd{} displays the weights of the 90/10 traffic split.}
-	\label{fig:results-traffic-split-weights}
-\end{figure}
 
 
 \subsubsection{Access Policies}
@@ -72,10 +80,13 @@ TBD
 
 \subsubsection{Load Balancing}
 \label{sec:load-result}
+To show the integrated load balancing of \linkerd{} we defined three replicas of the \textsc{goodbye-world-service}.
+Therefore we set In the deployment configuration at the \lstinline|spec:|-section the count of replicas up to 3 (\lstinline|replicas: 3|).
+Now Kubernetes will provide three pods running the \textsc{goodbye-world-service}.
+Since we injected the configuration file by \linkerd{} all replicas are within the service mesh and load balancing takes place out-of-box.
 
-In the \lstinline|spec:|-section setting the count of replicas up to 3 (\lstinline|replicas: 3|).
-
-\autoref{fig:results-load-balance}
+\autoref{fig:results-load-balance} shows the pods list of \linkerd{} dashboard in the deployment view of \textsc{goodbye-world-service}.
+We can see that requests are balanced equally to each replica.
 
 \begin{figure}
 	\includegraphics[width=\columnwidth]{img/results-load-balance}
@@ -83,13 +94,9 @@ In the \lstinline|spec:|-section setting the count of replicas up to 3 (\lstinli
 	\label{fig:results-load-balance}
 \end{figure}
 
-TBD
-\begin{itemize}
-	\item integrated in \linkerd{}
-	\item if ingress is "injected", honor;)
-\end{itemize}
-
 \subsubsection{Central Monitoring and Logging}
+As we can see \linkerd{} comes with a dashboard showing the current state of the service mesh.
+
 \begin{itemize}
 	\item Monitoring comes "out-of-box"
 	\item as it was shown in images in \autoref{sec:canary-result} and \autoref{sec:load-result}
@@ -99,6 +106,8 @@ TBD
 		\item Maybe show a call-tree from linkerd-dashboard?
 	\end{itemize}
 
+	\item We worked with \linkerd{} in version 2.9.3. -->maybe into pitfalls...
+	\item There was an own log-command by \linkerd{} (\lstinline|linkerd logs|)
 	\item Logging (\lstinline|linkerd logs|) by linkerd was removed, since it was the same as logs from \lstinline|kubectl|\\
 	(\url{https://github.com/linkerd/linkerd2/discussions/5790})
 	\item How to use \lstinline|kubectl|?\\
@@ -126,6 +135,7 @@ TBD
 	\end{itemize}
 
 	\item Bring some time...
+	\item There os no way to use \linkerd{} without Kubernetes. You'll have to learn some Kubernetes as well ;)
 	\item use bash-completion
 	\item Use ssh-port-forwarding to communicate with dashboard on VPS	
 \end{itemize}
