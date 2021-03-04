@@ -100,7 +100,7 @@ Now \kubernetes{} will provide three pods running the \textsc{goodbye-world-serv
 Since we injected the configuration file by \linkerd{} all replicas are within the service mesh and load balancing takes place out-of-box.
 
 \autoref{fig:results-load-balance} shows the pods list of \linkerd{} dashboard in the deployment view of \textsc{goodbye-world-service}.
-We can see that requests are balanced equally to each replica.
+We can see that requests are balanced equally to each pod.
 
 \begin{figure}
 	\includegraphics[width=\columnwidth]{img/results-load-balance}
@@ -109,37 +109,32 @@ We can see that requests are balanced equally to each replica.
 \end{figure}
 
 \subsubsection{Central Monitoring and Logging}
-As we can see \linkerd{} comes with a dashboard showing the current state of the service mesh.
+\label{sec:log-result}
+As we can see \linkerd{} comes with a dashboard showing the current state of the service mesh (see images in \autoref{sec:canary-result} and \autoref{sec:load-result}).
+To collect the so called "golden metrics" \linkerd{} brings \textsc{Prometheus} which is out-of-box connected to each pod.
+With this we can see \textit{who} is talking \textit{how much} to \textit{whom}.
+Next to the \linkerd{} dashboard there is a \textsc{Grafana} component for each deployment \linkerd{} provides automatically.
+Different from the dashboard of \linkerd{} \textsc{Grafana} shows temporal progression of the metrics.
 
-\begin{itemize}
-	\item Monitoring comes "out-of-box"
-	\item as it was shown in images in \autoref{sec:canary-result} and \autoref{sec:load-result}
-	\begin{itemize}
-		\item \linkerd{} brings \textsc{Prometheus} and \textsc{Grafana}
-		\item  Now we can see \textbf{who} is talking \textbf{how much} to \textbf{whom}
-		\item Maybe show a call-tree from linkerd-dashboard?
-	\end{itemize}
-
-	\item There was an own log-command by \linkerd{} (\lstinline|linkerd logs|)
-	\item Logging (\lstinline|linkerd logs|) by linkerd was removed, since it was the same as logs from \lstinline|kubectl|\\
-	(\url{https://github.com/linkerd/linkerd2/discussions/5790})
-	\item How to use \lstinline|kubectl|?\\
-		\lstinline|kubectl logs <pod> <service>|
-	\item here the \lstinline|bash-completion| is very useful (see appendix)
-	\item often read: \textsc{Loki} as logging solution...?
-	\begin{itemize}
-		\item easy to embed into  Grafana
-	\end{itemize}
-\end{itemize}
-
+To receive the logs of a service you may use the \kubernetes{} command \lstinline|kubectl logs <pod> <service>|
+	\footnote{
+		There was an own implementation for logs in \linkerd{} (\lstinline|linkerd logs|). 
+		It was removed somewhere about version 2.4 since it overlapped with \lstinline|kubectl logs|.
+		Read more in this GitHub discussion:\\
+		\url{https://github.com/linkerd/linkerd2/discussions/5790}
+	}.
 
 \subsection{Pitfalls}
-...and lessons learned?
-
+This section is for everybody wanting to reproduce showcases above.
+Here we stated most important hints for which we would have been grateful if we had had them at the beginning:
 \begin{itemize}
-	\item it's abit more than \linkerd{}.
-	\item We will need to know about \lstinline|kubectl|.
-	\item we weren't able to apply access policies
+	\item First tip: Bring some time.\\
+	To use \linkerd{} you have to acquire knowledge about \kubernetes{} and the Unix-Shell.
+	There os no way to use \linkerd{} without \kubernetes{}.
+	In many commands you rather have to call \lstinline|kubectl| than \lstinline|linkerd|.
+
+
+	\item as you can see, we weren't able to apply access policies
 \end{itemize}
 \begin{itemize}
 	\item \linkerd{} says, it'll need only 2GB of RAM 
@@ -151,12 +146,18 @@ As we can see \linkerd{} comes with a dashboard showing the current state of the
 	\item Minikube
 	\begin{itemize}
 		\item use command to build docker images into minikube-environment to be available in K8s.
+		Remember to run this command in every shell you want to build \textsc{Docker}-images for \textsc{Minikube}:
+		\lstinline|eval $(minikube -p minikube docker-env)|
+		WHAT TOES IT DO? TBS
 	\end{itemize}
 
-	\item Bring some time...
-	\item There os no way to use \linkerd{} without \kubernetes{}. You'll have to learn some \kubernetes{} as well ;)
 	\item use bash-completion
+	\kubernetes{} deploys pods with an unique name by appending an alphanumeric identifier to the service-name, as you can see in \autoref{fig:results-load-balance}.
+	For making it easier to type these unique names into the CLI you can use \textsc{Bash-completion}
+	
 	\item Use ssh-port-forwarding to communicate with dashboard on VPS	
 \end{itemize}
 
 For further details on the setup, configuration and usage, see the appendix.
+
+
