@@ -90,7 +90,18 @@ The deployment section of \textsc{hello-world-service} in \linkerd{} dashboard n
 
 
 \subsubsection{Access Policies}
-TBD
+To restrict the access to the \textsc{name-service} is the only challenge we did not made.
+Access policies is a topic often called in context of service meshes.
+But until now there is no support on the part of \linkerd{}.
+On GitHub you'll find an open issue from 2019 asking for support of \kubernetes{}' \textit{Network Policies}\footnote{
+	See \url{https://github.com/linkerd/linkerd2/issues/2746}	
+}.
+But for the last two years it is still open.
+	
+We tried to implement it with Network Policies but have not made it due to time constraints.
+It is not just trivial because you have to restrict \linkerd{}'s sidecars rather than services itself.
+Sure it will be possible with \kubernetes{} to manage it, but it's not a feature of \linkerd{}.
+This is why we dropped this showcase in order to finish the other four.
 
 \subsubsection{Load Balancing}
 \label{sec:load-result}
