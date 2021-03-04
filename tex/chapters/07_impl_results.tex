@@ -130,32 +130,36 @@ Here we stated most important hints for which we would have been grateful if we 
 \begin{itemize}
 	\item First tip: Bring some time.\\
 	To use \linkerd{} you have to acquire knowledge about \kubernetes{} and the Unix-Shell.
-	There os no way to use \linkerd{} without \kubernetes{}.
+	There is no way to use \linkerd{} without \kubernetes{}.
 	In many commands you rather have to call \lstinline|kubectl| than \lstinline|linkerd|.
-
-
-	\item as you can see, we weren't able to apply access policies
-\end{itemize}
-\begin{itemize}
-	\item \linkerd{} says, it'll need only 2GB of RAM 
-	\begin{itemize}
-		\item that was not enough. K8s was crashing
-		\item With 4 GB it works
-	\end{itemize}
-
-	\item Minikube
-	\begin{itemize}
-		\item use command to build docker images into minikube-environment to be available in K8s.
-		Remember to run this command in every shell you want to build \textsc{Docker}-images for \textsc{Minikube}:
-		\lstinline|eval $(minikube -p minikube docker-env)|
-		WHAT TOES IT DO? TBD
-	\end{itemize}
-
-	\item use bash-completion
-	\kubernetes{} deploys pods with an unique name by appending an alphanumeric identifier to the service-name, as you can see in \autoref{fig:results-load-balance}.
-	For making it easier to type these unique names into the CLI you can use \textsc{Bash-completion}
 	
-	\item Use ssh-port-forwarding to communicate with dashboard on VPS	
+	Since this project was time-boxed, we weren't able to finish the "Access Policies" because of this huge period of vocational adjustment.
+	
+	\item Give enough RAM.\\
+	In the documentation of \textsc{Minikube} we found, that 2 GB of RAM should be enough\footnote{
+		See \url{https://minikube.sigs.k8s.io/docs/start/}
+	}.
+	But for running \linkerd{} inside it wasn't. 
+	After a few hours of running the operating system began to swap memory and \kubernetes{} was unusable. 
+	Provisioning up to 4 GB solved this problem.
+
+	\item Connect to \textsc{Minikube} Environment.\\
+	Building your Dockerfile into an image does not provide it for \textsc{Minikube}.
+	To make it available for \textsc{Minikube} you have to run the following command in \textit{every} shell-session you want to build:
+	\lstinline|eval $(minikube -p minikube docker-env)|
+	This will connect your local \textsc{Docker}-CLI to \textsc{Docker} inside \textsc{Minikube}.
+	
+	If you forget to use this command, your local changes on the image will not apply to container running in \kubernetes{}.
+
+	\item Use \textsc{Bash-Completion}.\\
+	This is a package that provides automatic completion of shell commands, arguments and options.
+	All technologies we used here provide completion code you can use in \textsc{Bash-Completion}.
+	
+	As an example \kubernetes{} deploys pods with an unique name by appending an alphanumeric identifier to the service-name, as you can see in \autoref{fig:results-load-balance}.
+	To get info about these pods (e.g. ask for the logs as stated in \autoref{sec:log-result}) you'd have to type the whole pod-name.
+	With \textsc{Bash-Completion} you can complete the 15-digits unique identifier automatically by pressing the tab-key.
+	
+%	\item Use ssh-port-forwarding to communicate with dashboard on VPS	
 \end{itemize}
 
 For further details on the setup, configuration and usage, see the appendix.
