@@ -1,6 +1,6 @@
 \section{Prototypical Service Mesh Implementation}
 
-The following chapter describes our concept of our prototypical service mesh implementation and its outcome. In order to also practically work out the differences between service meshes and a traditional microservice operation, we will initially run our application using only Kubernetes, and then later set up a service mesh.
+The following chapter describes our concept of our prototypical service mesh implementation and its outcome. In order to also practically work out the differences between service meshes and a traditional microservice operation, we will initially run our application using only \kubernetes{}, and then later set up a service mesh.
 
 \begin{figure*}
     \centering
@@ -61,7 +61,7 @@ linkerd install | kubectl apply -f -
 The first line downloads and runs the install-script which chooses the correct installation for running operating system and validates checksum before finally linking the executable for \linkerd{}-CLI.
 The second line exports installation path of \linkerd{} into the \lstinline|$PATH|-environment. 
 Finally line 3 uses the \linkerd{}-CLI and installs the control plane on the cluster.
-\lstinline|linkerd install| returns a Kubernetes manifest in YAML, which is "piped" into \lstinline|kubectl| to apply all contained control plane resources.
+\lstinline|linkerd install| returns a \kubernetes{} manifest in YAML, which is "piped" into \lstinline|kubectl| to apply all contained control plane resources.
 
 From now the framework for our service mesh is done.
 All communication between \linkerd{}-proxies are encrypted by default.
@@ -71,7 +71,7 @@ This is a usual workflow in \linkerd{}: The output is a YAML-file, that can be p
 
 \subsection{Adding Services into Linkerd}
 Until now the service mesh is ruled only by \linkerd{}s own services.
-To add a service, you start with a common Kubernetes-manifest in YAML.
+To add a service, you start with a common \kubernetes{}-manifest in YAML.
 But instead of giving it to \lstinline|kubectl| directly, you "inject" a \linkerd{} command showed in \autoref{lst:linkerd-inject}.
 \begin{lstlisting}[language=bash,caption={Inject \textsc{Linkerd}-annotation into manifest.}, label={lst:linkerd-inject}]
 cat <config-yml> \
@@ -85,7 +85,7 @@ This way all Services belonging to one deployment can be covered.
 \autoref{lst:linkerd-annotation} shows an extract of an annotated YAML file.
 It says, \linkerd{} will inject every Pod in this deployment with its proxies.
 
-\begin{lstlisting}[caption={Extract of a Kubernetes manifest annotated by \textsc{Linkerd}.}, label={lst:linkerd-annotation}]
+\begin{lstlisting}[caption={Extract of a \kubernetes{}-manifest annotated by \textsc{Linkerd}.}, label={lst:linkerd-annotation}]
 kind: Deployment
 spec:
 [...]
@@ -98,14 +98,14 @@ spec:
  
 \subsection{Communication between Services}
 
-In the Kubernetes-manifest the names of cluster, namespace and service is defined.
+In the \kubernetes{}-manifest the names of cluster, namespace and service is defined.
 From this the unique DNS-name is derived the following way:
 
-\begin{lstlisting}[caption={DNS-name of a local service in Kubernetes.}, label={lst:k8s-dns}]
+\begin{lstlisting}[caption={DNS-name of a local service in \kubernetes{}.}, label={lst:k8s-dns}]
 <svc-name>.<namespace>.svc.<cluster>.local
 \end{lstlisting}
 
-When calling this DNS-name, Kubernetes will dissolve corresponding Pod and redirect the request accordingly.
+When calling this DNS-name, \kubernetes{} will dissolve corresponding Pod and redirect the request accordingly.
 This way an application A can easily access the API of an application B within the same cluster under its DNS-name.
 And this holds even with service mesh.
 \linkerd{} wraps each application into a Pod next to \linkerd{}-proxy.
@@ -120,8 +120,8 @@ As stated in \autoref{linkerd} we chose \traefik{}.
 Sure, \traefik{} could cope quite more than an ingress, but we will only use its remote proxy functionality here.
 \autoref{lst:ingress-hello} shows the configuration file for the ingress route \lstinline|/helloworld| to the corresponding \textsc{hello-world-service} as stated in \autoref{sec:services}.
 Again the interesting part is in the metadata annotation.
-First we tell Kubernetes to use \traefik{} as ingress controller.
-Second we route all traffic to the corresponding \linkerd{}-sidecar (abbreviated here in Kubernetes-style with \lstinline|l5d|).
+First we tell \kubernetes{} to use \traefik{} as ingress controller.
+Second we route all traffic to the corresponding \linkerd{}-sidecar (abbreviated here in \kubernetes{}-style with \lstinline|l5d|).
 This configuration allows us to use different routes for different services by calling another path in the URL.
 Analog route we defined for \textsc{goodbye-world-service}.
 

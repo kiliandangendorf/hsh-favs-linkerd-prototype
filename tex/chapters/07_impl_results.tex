@@ -1,14 +1,28 @@
 \section{Results}
 
-Put results of playing around with service mesh here...
+This section examines necessary steps to apply the showcases stated in \autoref{sec:showcases-1} with \linkerd{}, how the results look like and some pitfalls we have overcome.
 
-\begin{itemize}
-	\item it's abit more than \linkerd{}.
-	\item We will need to know about \lstinline|kubectl|.
-\end{itemize}
+Since functionality and APIs vary in time, the following table shows the versions of technologies we use:
+\begin{table}[h]
+\centering	
+\begin{tabular}{c|c}
+	Technology & Version \\\hline
+	\textsc{Docker} & 20.10.3\\\hline
+	\textsc{Minikube} & 1.17.1\\\hline
+	\kubernetes & 1.20.2\\\hline
+	\linkerd & 2.9.3 \\
+\end{tabular}
+\vspace{0.25mm}
+%\caption{Comparison between Isto and \textsc{Linkerd}}
+\label{tab:versions}
+\end{table}
+
+Services are built into \textsc{Docker}-images.
+To use only one machine for development we used \textsc{Minikube}.
+Within this \kubernetes{} and \linkerd{} run.
 
 \subsection{Showcases Implementation}
-This is what the showcases called in \autoref{sec:showcases-1} look like with \linkerd{}.
+With the exception of "Acess Policies" we implemented and controlled with \linkerd{} the challenges stated in \autoref{sec:showcases-1}.
 
 \subsubsection{Encryption}
 From the second that a service is injected by \linkerd{} and applied to the cluster, all communication to that service is automatically encrypted.
@@ -16,9 +30,9 @@ This holds not only for our self-implemented communication but also for metrics-
 Since the communication is proxied by \linkerd{} it activates certificate distribution and encryption out-of-box.
 
 If you don't want to use this feature, you can disable by overwriting the \linkerd{} configuration.
-The following command will generate an updated YAML-configuration you can apply in Kubernetes.
+The following command will generate an updated YAML-configuration you can apply in \kubernetes{}.
 \begin{lstlisting}
-linkerd install \
+linkerd upgrade \
   --disable-identity \
   --disable-tap
 \end{lstlisting}
@@ -81,8 +95,8 @@ TBD
 \subsubsection{Load Balancing}
 \label{sec:load-result}
 To show the integrated load balancing of \linkerd{} we defined three replicas of the \textsc{goodbye-world-service}.
-Therefore we set In the deployment configuration at the \lstinline|spec:|-section the count of replicas up to 3 (\lstinline|replicas: 3|).
-Now Kubernetes will provide three pods running the \textsc{goodbye-world-service}.
+Therefore we set In the deployment configuration at the \lstinline|spec|-section the count of replicas up to three	 (\lstinline|replicas: 3|).
+Now \kubernetes{} will provide three pods running the \textsc{goodbye-world-service}.
 Since we injected the configuration file by \linkerd{} all replicas are within the service mesh and load balancing takes place out-of-box.
 
 \autoref{fig:results-load-balance} shows the pods list of \linkerd{} dashboard in the deployment view of \textsc{goodbye-world-service}.
@@ -106,7 +120,6 @@ As we can see \linkerd{} comes with a dashboard showing the current state of the
 		\item Maybe show a call-tree from linkerd-dashboard?
 	\end{itemize}
 
-	\item We worked with \linkerd{} in version 2.9.3. -->maybe into pitfalls...
 	\item There was an own log-command by \linkerd{} (\lstinline|linkerd logs|)
 	\item Logging (\lstinline|linkerd logs|) by linkerd was removed, since it was the same as logs from \lstinline|kubectl|\\
 	(\url{https://github.com/linkerd/linkerd2/discussions/5790})
@@ -122,6 +135,12 @@ As we can see \linkerd{} comes with a dashboard showing the current state of the
 
 \subsection{Pitfalls}
 ...and lessons learned?
+
+\begin{itemize}
+	\item it's abit more than \linkerd{}.
+	\item We will need to know about \lstinline|kubectl|.
+	\item we weren't able to apply access policies
+\end{itemize}
 \begin{itemize}
 	\item \linkerd{} says, it'll need only 2GB of RAM 
 	\begin{itemize}
@@ -135,7 +154,7 @@ As we can see \linkerd{} comes with a dashboard showing the current state of the
 	\end{itemize}
 
 	\item Bring some time...
-	\item There os no way to use \linkerd{} without Kubernetes. You'll have to learn some Kubernetes as well ;)
+	\item There os no way to use \linkerd{} without \kubernetes{}. You'll have to learn some \kubernetes{} as well ;)
 	\item use bash-completion
 	\item Use ssh-port-forwarding to communicate with dashboard on VPS	
 \end{itemize}
