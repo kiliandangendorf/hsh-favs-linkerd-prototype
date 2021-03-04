@@ -73,7 +73,7 @@ Documentation                    & ++                                           
 
 From an operators perspective, \textsc{Istio} and \textsc{Linkerd} look quite similar. After installing the service mesh, there are two main usage aspects: One the one hand, operators need to inject sidecar proxies in the pods of the microservice. On the other hand, they need to apply pluggable resources in YAML format, that could define policies like the usage of TLS.
 
-By executing the command listed in \ref{lst:istio}, all deployments from namespaceA automatically get a sidecar proxy injected, while listing \ref{lst:linkerd} shows the injection command of a single deployment when using \textsc{Linkerd}.
+By executing the command listed in \ref{lst:istio}, all deployments from namespace automatically get a sidecar proxy injected, while listing \ref{lst:linkerd} shows the injection command of a single deployment when using \textsc{Linkerd}.
 
 \begin{lstlisting}[language=bash,caption={Injection of sidecards into deployments of a namespace in \textsc{Istio}},label={lst:istio}]
 #!/bin/bash

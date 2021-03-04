@@ -283,7 +283,7 @@ nano /etc/ssh/sshd_config
 ```
 change Port
 ```
-#Port 22 —> Port e.g. 57128
+#Port 22 -> Port e.g. 57128
 ```
 
 and disable `root` for ssh-login (since we have a sudo user already)
