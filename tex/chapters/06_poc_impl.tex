@@ -1,4 +1,4 @@
-\section{Prototypical Service Mesh Implementation}
+\section{Prototypical Service Mesh Setup}
 
 The following chapter describes our concept of our prototypical service mesh implementation and its outcome. In order to also practically work out the differences between service meshes and a traditional microservice operation, we will initially run our application using only \kubernetes{}, and then later set up a service mesh.
 
@@ -54,7 +54,7 @@ The following sequence of bash commands shows the \textsc{Linkerd} installation 
 #!/bin/bash
 curl -sL https://run.linkerd.io/install \
 	| sh
-echo "export PATH=$PATH:$HOME/.linkerd2/bin" \
+echo "export PATH=$PATH:~/.linkerd2/bin" \
 	>> ~/.bashrc
 linkerd install | kubectl apply -f -
 \end{lstlisting}
