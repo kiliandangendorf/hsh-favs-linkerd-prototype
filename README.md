@@ -465,11 +465,19 @@ kubectl delete -f <config-yml>
 
 
 1. Encryption: 
-  By using a service mesh, it should be shown that an encryption policy can be easily applied or removed.
-2) Canary Deployment: To provide an example showcase for canary deployment, we implemented two versions of NAME-SERVICE which differ by the returned string (version 1 returns only forename while version 2 returns surname as well). The mesh is tasked with redirecting traffic so that 90% of all requests are made to version 1 and 10% of requests are made to version 2.
-3) Access Policies: Another restriction is that the NAME- SERVICE is only accessible from the HELLO-WORLD- SERVICE. Access restriction should not be a task of the actual NAME-SERVICE application. We want to show that access to services is easily managable via YAML resources.
-4) Load Balancing: Some service meshes also provide load balancing techniques, including a dashboard which visualizes the distribution of the specific load. This is also a showcase of our proof of concept.
-5) Central Monitoring and Logging: 
+	By using a service mesh, it should be shown that an encryption policy can be easily applied or removed.
+2. Canary Deployment: 
+	To provide an example showcase for canary deployment, we implemented two versions of NAME-SERVICE which differ by the returned string (version 1 returns only forename while version 2 returns surname as well). 
+	The mesh is tasked with redirecting traffic so that 90% of all requests are made to version 1 and 10% of requests are made to version 2.
+3. <del>Access Policies: 
+	Another restriction is that the NAME- SERVICE is only accessible from the HELLO-WORLD- SERVICE. Access restriction should not be a task of the actual NAME-SERVICE application. 
+	We want to show that access to services is easily managable via YAML resources.
+	</del>
+4. Load Balancing: 
+	Some service meshes also provide load balancing techniques, including a dashboard which visualizes the distribution of the specific load. 
+	This is also a showcase of our proof of concept.
+5. Central Monitoring and Logging: 
+	The proof of concept should show that services in a microservice landscape can be monitored and managed centrally using the service mesh.
 
 
 
