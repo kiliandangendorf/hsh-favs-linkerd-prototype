@@ -463,7 +463,21 @@ kubectl delete -f <config-yml>
 
 ## Implement Service Mesh Showcases
 
+### Services
+- dockerfiles `from docker/*`
+- some yaml examples from `src/svc`
 
+### Traefik as Ingress Controller
+- helm installation
+- usage in `src/svc`files
+
+### Deploy (unmeshed and meshed)
+- scripts and what they do
+
+### Generate Load
+- three example files
+
+### Showcases
 1. Encryption: 
 	By using a service mesh, it should be shown that an encryption policy can be easily applied or removed.
 2. Canary Deployment: 
@@ -478,6 +492,26 @@ kubectl delete -f <config-yml>
 	This is also a showcase of our proof of concept.
 5. Central Monitoring and Logging: 
 	The proof of concept should show that services in a microservice landscape can be monitored and managed centrally using the service mesh.
+
+#### Encryption
+- out-of-Box
+- see with `linkerd tap`
+
+
+#### Canary Deployment (90/10 Traffic Split)
+- apply traffic split on `nameapi`
+
+
+#### Load Balancing
+- three replicas of `goodbye`
+- image from docu?
+
+#### Logging
+- `kubectl logs`
+- `use bash-completion` (see [Bash-Completion](#bash-completion))
+
+
+
 
 
 
