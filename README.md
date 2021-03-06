@@ -7,41 +7,40 @@ how we implemented showcases to prove Linkerd's work ([Implement Service Mesh Sh
 
 
 ## Overview
-  - [Set up the VPS](#set-up-the-vps)
-    - [Pre Steps](#pre-steps)
-      - [Add a user different from `root`](#add-a-user-different-from-root)
-      - [Change `ssh` Settings](#change-ssh-settings)
-    - [Docker](#docker)
-    - [Docker-Compose](#docker-compose)
-    - [Post-installation Steps for Linux](#post-installation-steps-for-linux)
-    - [Minikube](#minikube)
-    - [`kubectl`](#kubectl)
-    - [Firefox](#firefox)
-    - [Linkerd](#linkerd)
-    - [Bash-Completion](#bash-completion)
-  - [Connect to VPS](#connect-to-vps)
-    - [`ssh` Hosts](#ssh-hosts)
-    - [`ssh-copy-id`](#ssh-copy-id)
-    - [Tunneling](#tunneling)
-      - [Port-Forwarding](#port-forwarding)
-        - [Use `LocalForward`](#use-localforward)
-      - [X11 Forwarding](#x11-forwarding)
-  - [Get in touch with `linkerd` and `kubectl`](#get-in-touch-with-linkerd-and-kubectl)
-    - [Use Linkerd](#use-linkerd)
-    - [Install buggy demo app `emojivoto`](#install-buggy-demo-app-emojivoto)
-    - [Building Docker Image for Minikube](#building-docker-image-for-minikube)
-    - [Run K8s Job](#run-k8s-job)
-  - [Implement Service Mesh Showcases](#implement-service-mesh-showcases)
-    - [Services](#services)
-    - [Traefik as Ingress Controller](#traefik-as-ingress-controller)
-    - [Deploy (unmeshed and meshed)](#deploy-unmeshed-and-meshed)
-    - [Generate Load](#generate-load)
-    - [Showcases](#showcases)
-      - [Encryption](#encryption)
-      - [Canary Deployment (90/10 Traffic Split)](#canary-deployment-9010-traffic-split)
-      - [Load Balancing](#load-balancing)
-      - [Logging](#logging)
-      - [Usability](#usability)
+- [Set up the VPS](#set-up-the-vps)
+  - [Pre Steps](#pre-steps)
+    - [Add a user different from `root`](#add-a-user-different-from-root)
+    - [Change `ssh` Settings](#change-ssh-settings)
+  - [Docker](#docker)
+  - [Docker-Compose](#docker-compose)
+  - [Post-installation Steps for Linux](#post-installation-steps-for-linux)
+  - [Minikube](#minikube)
+  - [`kubectl`](#kubectl)
+  - [Firefox](#firefox)
+  - [Linkerd](#linkerd)
+  - [Bash-Completion](#bash-completion)
+- [Connect to VPS](#connect-to-vps)
+  - [`ssh` Hosts](#ssh-hosts)
+  - [`ssh-copy-id`](#ssh-copy-id)
+  - [Tunneling](#tunneling)
+    - [Port-Forwarding](#port-forwarding)
+      - [Use `LocalForward`](#use-localforward)
+    - [X11 Forwarding](#x11-forwarding)
+- [Get in touch with `linkerd` and `kubectl`](#get-in-touch-with-linkerd-and-kubectl)
+  - [Use Linkerd](#use-linkerd)
+  - [Install buggy demo app `emojivoto`](#install-buggy-demo-app-emojivoto)
+  - [Building Docker Image for Minikube](#building-docker-image-for-minikube)
+  - [Run K8s Job](#run-k8s-job)
+- [Implement Service Mesh Showcases](#implement-service-mesh-showcases)
+  - [Services](#services)
+  - [Traefik as Ingress Controller](#traefik-as-ingress-controller)
+  - [Deploy (unmeshed and meshed)](#deploy-unmeshed-and-meshed)
+  - [Generate Load](#generate-load)
+  - [Showcases](#showcases)
+    - [Encryption](#encryption)
+    - [Canary Deployment (90/10 Traffic Split)](#canary-deployment-9010-traffic-split)
+    - [Load Balancing](#load-balancing)
+    - [Logging](#logging)
 
 
 ## Set up the VPS
@@ -472,12 +471,31 @@ kubectl delete -f <config-yml>
 
 ### Services
 In `src/docker` you find all files to create services in Docker-Images.
-This Images are used in `src/svc` kubernetes yamls.
-To bring all together you find in `src` sh files for easy usage.
+
+To build them all in one and well-tagged you can use:
+```
+sh docker-build.sh
+```
+Remember to link your local environment to `minikube` as stated in [Building Docker Image for Minikube](#building-docker-image-for-minikube):
+```
+eval $(minikube -p minikube docker-env)
+```
+
+The images are used in Kubernetes' yamls in folder `src/svc`.
+You may deploy them manually unmeshed with:
+```
+kubectl apply -f <path-to-yaml>
+```
+or meshed with:
+```
+cat <path-to-yaml> | linkerd inject - | kubectl apply -f -
+```
+
+To bring all together you find some shell-scripts in `src` for easy usage (see [Deploy (unmeshed and meshed)](#deploy-unmeshed-and-meshed)).
 
 
 ### Traefik as Ingress Controller
-To install traefik you have to use `helm` (a package manager for Kubernetes).
+To install Traefik you have to use `helm` (a package manager for Kubernetes).
 
 If `helm` is not installed yet:
 ```
@@ -495,34 +513,67 @@ helm repo add traefik https://helm.traefik.io/traefik
 helm repo update
 helm install --set --namespace=traefik traefik traefik/traefik
 ```
-In every file in `src/svc` we see at the end of file traefik extentions.
+
+In the services yamls in `src/svc` we added an ingress route for services that should be accessed from outside.
+For example the ingress route of the `helloworld`-service looks like this:
+```
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: helloworld
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    ingress.kubernetes.io/custom-request-headers: l5d-dst-override:helloworld.default.svc.cluster.local:80
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /helloworld
+        backend:
+          serviceName: helloworld
+          servicePort: 80
+```
+First we tell Kuberenetes to use Traefik as ingress controller. 
+Second we route all traffic to the corresponding Linkerd-sidecar (abbreviated here in Kubernetes-style with `l5d`). 
+This configuration allows us to use different routes for different services by calling another path in the URL. 
+Analog route we defined for `goodbyeworld`-service.
 
 
 ### Deploy (unmeshed and meshed)
-At first deploy services without mash to the differences later.
+
+At first we deploy services unmeshed without Linkerd-injection.
 ```
 sh deploy-unmeshed.sh
 ```
-Now start the Dashboard with:
+This script only applies services in Kubernetes.
+
+When starting the Linkerd Dashboard with
 ```
 linkerd dashboard
 ```
-Now we see unmeshed services in the UI.
+We can see unmeshed services in the UI.
 
-After that deloy the services with mesh:
+To apply them injected by Linkerd use:
 ```
 sh deploy-meshed.sh
 ```
-Now we see all service in the mesh.
+This script applies services in Kubernetes *injected* by Linkerd.
+
+In the UI now we see all service with status *meshed**.
+
 
 ### Generate Load
-To see more information in the Dashboard we need load:
+
+To see some monitoring power of Linkerd we need load.
+The scripts beginning with `load-` easily use `curl` on the services within a `for`-loop:
 ```
 sh load-...sh
 ```
 
 
 ### Showcases
+Our prototypical implementation aims to provide answers to the following five challenges of running and maintaining microservices.
+
 1. Encryption: 
 	By using a service mesh, it should be shown that an encryption policy can be easily applied or removed.
 2. Canary Deployment: 
@@ -538,33 +589,70 @@ sh load-...sh
 5. Central Monitoring and Logging: 
 	The proof of concept should show that services in a microservice landscape can be monitored and managed centrally using the service mesh.
 
+In the following we state how we proved them...
+
 #### Encryption
-To use encryped connections between the services we have nothing to do.
-During one of the load files is running we can show the traffic between the service by using tap command:
+To use encryped connections between the services we have nothing to do (if services are meshed).
+You can easily check by giving some load on eg. the `helloworld`-service and run the following command:
 ```
 linkerd tap deploy/helloworld
 ```
 
+Here you can see the realtime network tap on this service.
+For each connection you'll find the info `TLS=true`.
+
+By default Linkerd rolls out new certificates periodically and ensures encryption out-of-box.
+
 #### Canary Deployment (90/10 Traffic Split)
-- apply traffic split on `nameapi`
+To show this case, we implemented a new version of `nameapi`-service.
+Here we return next to forename also surname.
+To deploy `nameapi2.yaml` and `trafficsplit-90-10.yaml` you can easily use:
+```
+sh deploy-nameapi-v2.sh
+```
+
+This will apply a second version of `nameapi`-service next to existing one.
+And also add the 90/10 traffic split.
+
+The Linkerd dashboard now shows a new section for this traffic split.
+If you now run `load-single-helloworld.sh`, Linkerd will show that 90% of request will go to the old and 10% to the new version.
+
+![Linkerd dashboard displays the weights of the 90/10 traffic split.](./tex/img/results-traffic-split-weights.png "Linkerd dashboard displays the weights of the 90/10 traffic split.")
+
 
 
 #### Load Balancing
-- three replicas of `goodbye`
-- image from docu?
+The `goodbye`-deployment we configured with three pods (see `svc/goodbyeworld.yaml`):
+```
+spec:
+  replicas: 3
+```
+
+By running `load-goodbyeworld.sh` you'll see the load-balancing in the `goodbyeworld`-deployment section in Linkerd as follows.
+
+![The goodbyeworld-deployment shows all three replicas balancing the request-load.](./tex/img/results-load-balance.png "The goodbyeworld-deployment shows all three replicas balancing the request-load.")
+
+The request per second (RPS) are evenly balanced on each replica of `goodbyeworld`-service.
+
 
 #### Logging
 There is no way to see the logs from all services on one site.
-With the Dashboard we can identify problems with the mesh and identify the container they have errors.
-After that you can show the logs from this container with:
+With the dashboard you can identify problems the container throwing errors.
+After that you can show the logs from this container with (as stated in [Run K8s Job](#run-k8s-job)):
+
+```
+kubectl logs <unique-pod-name> <fancy-container-name>
+```
+For example get all logs from `helloworld`-service:
 ```
 kubectl logs helloworld-86bffbb9bf-6m7c5 helloworld 
 ```
-#### Usability 
-For faster typing you have to `use bash-completion` (see [Bash-Completion](#bash-completion))
+(This command won't work for you since Kubernetes generates a different unique identifier for each `apply`.)
 
-
-
+Especially for this command the `bash-completion`is very useful (see [Bash-Completion](#bash-completion)).
+As you can see in the example, Kubernetes deploys pods with an unique name by appending an alphanumeric identifier to the service-name. 
+To get info about these pods you’d have to type the whole pod-name accurate. 
+With `bash-completion` you can complete the 15-digits unique identifier automatically by pressing the tab-key.
 
 
 
