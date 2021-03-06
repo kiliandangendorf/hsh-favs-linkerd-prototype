@@ -473,7 +473,7 @@ kubectl delete -f <config-yml>
 ### Services
 In `src/docker` you find all files to create services in Docker-Images.
 This Images are used in `src/svc` kubernetes yamls.
-To bring all together you find in `src` sh files for easy useage.
+To bring all together you find in `src` sh files for easy usage.
 
 
 ### Traefik as Ingress Controller
@@ -492,13 +492,14 @@ kubectl create namespace traefik
 Add Traefik repo to `helm` and install:
 ```
 helm repo add traefik https://helm.traefik.io/traefik
+helm repo update
 helm install --set --namespace=traefik traefik traefik/traefik
 ```
 In every file in `src/svc` we see at the end of file traefik extentions.
 
 
 ### Deploy (unmeshed and meshed)
-At first deploy services without mash to the differenzes later.
+At first deploy services without mash to the differences later.
 ```
 sh deploy-unmeshed.sh
 ```
