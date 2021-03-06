@@ -7,41 +7,41 @@ how we implemented showcases to prove Linkerd's work ([Implement Service Mesh Sh
 
 
 ## Overview
-  * [Set up the VPS](#set-up-the-vps)
-    + [Pre Steps](#pre-steps)
-      - [Add a user different from `root`](#add-a-user-different-from--root-)
-      - [Change `ssh` Settings](#change--ssh--settings)
-    + [Docker](#docker)
-    + [Docker-Compose](#docker-compose)
-    + [Post-installation Steps for Linux](#post-installation-steps-for-linux)
-    + [Minikube](#minikube)
-    + [`kubectl`](#-kubectl-)
-    + [Firefox](#firefox)
-    + [Linkerd](#linkerd)
-    + [Bash-Completion](#bash-completion)
-  * [Connect to VPS](#connect-to-vps)
-    + [`ssh` Hosts](#-ssh--hosts)
-    + [`ssh-copy-id`](#-ssh-copy-id-)
-    + [Tunneling](#tunneling)
+  - [Set up the VPS](#set-up-the-vps)
+    - [Pre Steps](#pre-steps)
+      - [Add a user different from `root`](#add-a-user-different-from-root)
+      - [Change `ssh` Settings](#change-ssh-settings)
+    - [Docker](#docker)
+    - [Docker-Compose](#docker-compose)
+    - [Post-installation Steps for Linux](#post-installation-steps-for-linux)
+    - [Minikube](#minikube)
+    - [`kubectl`](#kubectl)
+    - [Firefox](#firefox)
+    - [Linkerd](#linkerd)
+    - [Bash-Completion](#bash-completion)
+  - [Connect to VPS](#connect-to-vps)
+    - [`ssh` Hosts](#ssh-hosts)
+    - [`ssh-copy-id`](#ssh-copy-id)
+    - [Tunneling](#tunneling)
       - [Port-Forwarding](#port-forwarding)
-        * [Use `LocalForward`](#use--localforward-)
+        - [Use `LocalForward`](#use-localforward)
       - [X11 Forwarding](#x11-forwarding)
-  * [Get in touch with `linkerd` and `kubectl`](#get-in-touch-with--linkerd--and--kubectl-)
-    + [Use Linkerd](#use-linkerd)
-    + [Install buggy demo app `emojivoto`](#install-buggy-demo-app--emojivoto-)
-    + [Building Docker Image for Minikube](#building-docker-image-for-minikube)
-    + [Run K8s Job](#run-k8s-job)
-  * [Implement Service Mesh Showcases](#implement-service-mesh-showcases)
-    + [Services](#services)
-    + [Traefik as Ingress Controller](#traefik-as-ingress-controller)
-    + [Deploy (unmeshed and meshed)](#deploy--unmeshed-and-meshed-)
-    + [Generate Load](#generate-load)
-    + [Showcases](#showcases)
+  - [Get in touch with `linkerd` and `kubectl`](#get-in-touch-with-linkerd-and-kubectl)
+    - [Use Linkerd](#use-linkerd)
+    - [Install buggy demo app `emojivoto`](#install-buggy-demo-app-emojivoto)
+    - [Building Docker Image for Minikube](#building-docker-image-for-minikube)
+    - [Run K8s Job](#run-k8s-job)
+  - [Implement Service Mesh Showcases](#implement-service-mesh-showcases)
+    - [Services](#services)
+    - [Traefik as Ingress Controller](#traefik-as-ingress-controller)
+    - [Deploy (unmeshed and meshed)](#deploy-unmeshed-and-meshed)
+    - [Generate Load](#generate-load)
+    - [Showcases](#showcases)
       - [Encryption](#encryption)
-      - [Canary Deployment (90/10 Traffic Split)](#canary-deployment--90-10-traffic-split-)
+      - [Canary Deployment (90/10 Traffic Split)](#canary-deployment-9010-traffic-split)
       - [Load Balancing](#load-balancing)
       - [Logging](#logging)
-
+      - [Usability](#usability)
 
 
 ## Set up the VPS
@@ -231,8 +231,8 @@ echo "source <(kubectl completion bash)" >> .bashrc
 
 For login you need:
 - IP of the VPS (you can easily ask for with `curl http://ipecho.net/plain`),
-- Username and Password set in [Add a user different from `root`](#add-a-user-different-from--root-),
-- `ssh` port set in [Change `ssh` Settings](#change--ssh--settings)).
+- Username and Password set in [Add a user different from `root`](#add-a-user-different-from-root),
+- `ssh` port set in [Change `ssh` Settings](#change-ssh-settings)).
 
 Connect via:
 ```
