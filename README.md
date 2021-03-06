@@ -471,8 +471,10 @@ kubectl delete -f <config-yml>
 ## Implement Service Mesh Showcases
 
 ### Services
-- dockerfiles `from docker/*`
-- some yaml examples from `src/svc`
+In `src/docker` you find all files to create services in Docker-Images.
+This Images are used in `src/svc` kubernetes yamls.
+To bring all together you find in `src` sh files for easy useage.
+
 
 ### Traefik as Ingress Controller
 To install traefik you have to use helm.
