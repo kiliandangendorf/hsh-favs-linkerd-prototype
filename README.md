@@ -26,12 +26,22 @@ how we implemented showcases to prove Linkerd's work ([Implement Service Mesh Sh
       - [Port-Forwarding](#port-forwarding)
         * [Use `LocalForward`](#use--localforward-)
       - [X11 Forwarding](#x11-forwarding)
-  * [Inspect Linkerd](#inspect-linkerd)
+  * [Get in touch with `linkerd` and `kubectl`](#get-in-touch-with--linkerd--and--kubectl-)
     + [Use Linkerd](#use-linkerd)
     + [Install buggy demo app `emojivoto`](#install-buggy-demo-app--emojivoto-)
     + [Building Docker Image for Minikube](#building-docker-image-for-minikube)
     + [Run K8s Job](#run-k8s-job)
   * [Implement Service Mesh Showcases](#implement-service-mesh-showcases)
+    + [Services](#services)
+    + [Traefik as Ingress Controller](#traefik-as-ingress-controller)
+    + [Deploy (unmeshed and meshed)](#deploy--unmeshed-and-meshed-)
+    + [Generate Load](#generate-load)
+    + [Showcases](#showcases)
+      - [Encryption](#encryption)
+      - [Canary Deployment (90/10 Traffic Split)](#canary-deployment--90-10-traffic-split-)
+      - [Load Balancing](#load-balancing)
+      - [Logging](#logging)
+
 
 
 ## Set up the VPS
@@ -320,7 +330,7 @@ ssh -C -Y favs "firefox" "http://127.0.0.1:38055/api/v1/namespaces/kubernetes-da
 
 
 
-## Inspect Linkerd
+## Get in touch with `linkerd` and `kubectl`
 
 Running `docker ps` gives a strange result on first sight:
 Just _one_ container named `minikube`.
