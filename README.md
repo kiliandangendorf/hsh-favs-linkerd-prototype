@@ -475,14 +475,39 @@ kubectl delete -f <config-yml>
 - some yaml examples from `src/svc`
 
 ### Traefik as Ingress Controller
-- helm installation
-- usage in `src/svc`files
+To install traefik you have to use helm.
+```
+helm install --set --namespace=traefik traefik traefik/traefik
+```
+In every file in `src/svc` we see at the end of file traefik extentions.
+
 
 ### Deploy (unmeshed and meshed)
-- scripts and what they do
+At first deploy services without mash to the differenzes later.
+```
+sh deploy-unmeshed.sh
+```
+Now start the Dashboard with:
+```
+linkerd Dashboard
+```
+Now we see unmeshed services in the UI.
+After that we remove all services with:
+```
+kubectl delete -f service...yaml
+```
+Now deloy the services with mesh:
+```
+sh deploy-meshed.sh
+```
+Now we see all service in the mesh.
 
 ### Generate Load
-- three example files
+To see more information in the Dashboard we need load:
+```
+sh load-...sh
+```
+
 
 ### Showcases
 1. Encryption: 
@@ -501,9 +526,11 @@ kubectl delete -f <config-yml>
 	The proof of concept should show that services in a microservice landscape can be monitored and managed centrally using the service mesh.
 
 #### Encryption
-- out-of-Box
-- see with `linkerd tap`
-
+To use encryped connections between the services we have nothing to do.
+During one of the load files is running we can show the traffic between the service by using tap command:
+```
+linkerd tap deploy/helloworld
+```
 
 #### Canary Deployment (90/10 Traffic Split)
 - apply traffic split on `nameapi`
