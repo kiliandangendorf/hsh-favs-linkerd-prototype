@@ -529,9 +529,11 @@ sh load-...sh
 	The proof of concept should show that services in a microservice landscape can be monitored and managed centrally using the service mesh.
 
 #### Encryption
-- out-of-Box
-- see with `linkerd tap`
-
+To use encryped connections between the services we have nothing to do.
+During one of the load files is running we can show the traffic between the service by using tap command:
+```
+linkerd tap deploy/helloworld
+```
 
 #### Canary Deployment (90/10 Traffic Split)
 - apply traffic split on `nameapi`
