@@ -41,7 +41,7 @@ how we implemented showcases to prove Linkerd's work ([Implement Service Mesh Sh
     - [Canary Deployment (90/10 Traffic Split)](#canary-deployment-9010-traffic-split)
     - [Load Balancing](#load-balancing)
     - [Logging](#logging)
-
+- [Links](#links)
 
 ## Set up the VPS
 
@@ -96,7 +96,7 @@ sudo apt-get install -yq docker-ce docker-ce-cli containerd.io
 
 ### Docker-Compose
 
-Now docker-compose: https://docs.docker.com/compose/install/
+Now `docker-compose`: https://docs.docker.com/compose/install/
 ```
 sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
@@ -656,5 +656,23 @@ With `bash-completion` you can complete the 15-digits unique identifier automati
 
 
 
+## Links
+
+- Getting Started with Linkerd:  
+	https://linkerd.io/2/getting-started/
+- Getting Started with Minikube:  
+	https://minikube.sigs.k8s.io/docs/start/
+- Install Docker:  
+	https://docs.docker.com/engine/install/ubuntu/
+- Install `docker-compose`:  
+	https://docs.docker.com/compose/install/
+- Traefik Proxy:  
+	https://helm.traefik.io/traefik resp. https://traefik.io/traefik
+- Locally Building Docker Image for Minikube from Sergei on Medium:  
+	https://medium.com/swlh/how-to-run-locally-built-docker-images-in-kubernetes-b28fbc32cc1d
+- IPecho:  
+	http://ipecho.net/plain resp. http://ipecho.net
+- Tutorial `ssh-copy-id`:  
+	https://www.ssh.com/ssh/copy-id
 
 
