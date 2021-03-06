@@ -478,8 +478,12 @@ kubectl delete -f <config-yml>
 - some yaml examples from `src/svc`
 
 ### Traefik as Ingress Controller
-- helm installation
-- usage in `src/svc`files
+To install traefik you have to use helm.
+```
+helm install --set --namespace=traefik traefik traefik/traefik
+```
+In every file in `src/svc` we see at the end of file traefik extentions.
+
 
 ### Deploy (unmeshed and meshed)
 - scripts and what they do
