@@ -477,8 +477,21 @@ To bring all together you find in `src` sh files for easy useage.
 
 
 ### Traefik as Ingress Controller
-To install traefik you have to use helm.
+To install traefik you have to use `helm` (a package manager for Kubernetes).
+
+If `helm` is not installed yet:
 ```
+sudo snap install helm --classic
+```
+
+Set up a namespace for Traefik:
+```
+kubectl create namespace traefik
+```
+
+Add Traefik repo to `helm` and install:
+```
+helm repo add traefik https://helm.traefik.io/traefik
 helm install --set --namespace=traefik traefik traefik/traefik
 ```
 In every file in `src/svc` we see at the end of file traefik extentions.
@@ -491,7 +504,7 @@ sh deploy-unmeshed.sh
 ```
 Now start the Dashboard with:
 ```
-linkerd Dashboard
+linkerd dashboard
 ```
 Now we see unmeshed services in the UI.
 After that we remove all services with:
