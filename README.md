@@ -541,8 +541,14 @@ linkerd tap deploy/helloworld
 - image from docu?
 
 #### Logging
-- `kubectl logs`
-- `use bash-completion` (see [Bash-Completion](#bash-completion))
+There is no way to see the logs from all services on one site.
+With the Dashboard we can identify problems with the mesh and identify the container they have errors.
+After that you can show the logs from this container with:
+```
+kubectl logs helloworld-86bffbb9bf-6m7c5 helloworld 
+```
+#### Usability 
+For faster typing you have to `use bash-completion` (see [Bash-Completion](#bash-completion))
 
 
 
