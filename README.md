@@ -488,7 +488,7 @@ In every file in `src/svc` we see at the end of file traefik extentions.
 ### Deploy (unmeshed and meshed)
 At first deploy services without mash to the differenzes later.
 ```
-kubectl apply -f service...yml
+sh deploy-unmeshed.sh
 ```
 Now start the Dashboard with:
 ```
@@ -501,14 +501,16 @@ kubectl delete -f service...yaml
 ```
 Now deloy the services with mesh:
 ```
-cat service..yaml \
-  | linkerd inject - \
-  | kubectl apply -f -
+sh deploy-meshed.sh
 ```
 Now we see all service in the mesh.
 
 ### Generate Load
-- three example files
+To see more information in the Dashboard we need load:
+```
+sh load-...sh
+```
+
 
 ### Showcases
 1. Encryption: 
