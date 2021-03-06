@@ -7,9 +7,9 @@ how we implemented showcases to prove Linkerd's work ([Implement Service Mesh Sh
 
 
 ## Overview
- * [Set up the VPS](#set-up-the-vps)
+  * [Set up the VPS](#set-up-the-vps)
     + [Pre Steps](#pre-steps)
-      - [Add user `favs`](#add-user--favs-)
+      - [Add a user different from `root`](#add-a-user-different-from--root-)
       - [Change `ssh` Settings](#change--ssh--settings)
     + [Docker](#docker)
     + [Docker-Compose](#docker-compose)
@@ -52,14 +52,13 @@ What I have done so far from scratch on an Ubuntu 20.04...
 
 Since our VPS is _online_ here's some security stuff...
 
-#### Add user `favs`
+#### Add a user different from `root`
 
-and add to Sudoers:
+...and password and add to Sudoers:
 ```
-adduser favs
-usermod -aG sudo favs 
+adduser <user-name>
+usermod -aG sudo <user-name>
 ```
-Password set to: YeahFAVS4 (Sudoers)
 
 #### Change `ssh` Settings
 
@@ -230,35 +229,33 @@ echo "source <(kubectl completion bash)" >> .bashrc
 
 ## Connect to VPS
 
-Login:
-```
-IP:       64.227.126.210
-User:     favs
-PW:       YeahFAVS4
-ssh-Port: 57128
-```
+For login you need:
+- IP of the VPS (you can easily ask for with `curl http://ipecho.net/plain`),
+- Username and Password set in [Add a user different from `root`](#add-a-user-different-from--root-),
+- `ssh` port set in [Change `ssh` Settings](#change--ssh--settings)).
 
 Connect via:
 ```
-ssh -p 57128 favs@64.227.126.210
+ssh -p <local-port> <user>@<ip-address>
 ```
 
 ### `ssh` Hosts
-Easiest way here is to add a new `Host` in your `ssh`-config.
+Easiest way here is to add a new `Host` in your local `ssh`-config.
 ```
 nano ~/.ssh/config
 ```
+
 And add (somewhere) these lines:
 ```
-Host favs
-    Hostname 64.227.126.210
-    Port 57128
-    User favs
+Host <config-name>
+    Hostname <ip-address>
+    Port <local-port>
+    User <user>
 ```
 
 Now you will only have to type: 
 ```
-ssh favs
+ssh <config-name>
 ```
 
 ### `ssh-copy-id`
@@ -267,7 +264,7 @@ To not always type your password for login, you can place your key remote for au
 
 If you already have a key-pair, copy your _public_ key with:
 ```
-ssh-copy-id -i ~/.ssh/id_rsa.pub favs
+ssh-copy-id -i ~/.ssh/id_rsa.pub <config-name>
 ```
 If not, check how to generate one here: https://www.ssh.com/ssh/copy-id
 
@@ -286,7 +283,7 @@ ssh -L <local_port>:<destination_server_ip>:<remote_port> <ssh_server_hostname>
 
 For us this is:
 ```
-ssh -nNT -L 12345:127.0.0.1:38055 favs
+ssh -nNT -L 12345:127.0.0.1:38055 <config-name>
 ```
 (The `-nNT` prevents the shell to be opened, since we only need the tunnel, not the remote shell.)
 
@@ -296,13 +293,13 @@ http://localhost:12345/
 ##### Use `LocalForward`
 Optionally you can also configure the `ssh_config` for local forward:
 ```
-Host favs
-    Hostname 64.227.126.210
-    Port 57128
-    User favs
+Host <config-name>
+    Hostname <ip-address>
+    Port <local-port>
+    User <user>
     LocalForward 12345 localhost:50750
 ```
-When you use the shell (`ssh favs`) it will automatically build up the local port-forwarding.
+When you use the shell (`ssh <config-name>`) it will automatically build up the local port-forwarding.
 If you start a second remote shell, there will be an info, that port is already bind (here: `12345`). 
 This is not a problem since the tunnel is already established.
 
@@ -318,7 +315,7 @@ ssh -C -Y <user>@<hostname>:<ssh-port> "firefox"
 
 Ex. Run `minikube dashboard` on the VPS and you can access via:
 ```
-ssh -C -Y favs "firefox" "http://127.0.0.1:38055/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/"
+ssh -C -Y <config-name> "firefox" "http://127.0.0.1:38055/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/"
 ```
 (Minikube changing its dashboard-port every time it starts :/)
 
@@ -363,7 +360,7 @@ The Dashboards are there.
 
 This is where we use the [`ssh`-tunnel](#port-forwarding) again.
 ```
-ssh -nNT -L 12345:127.0.0.1:50750 favs
+ssh -nNT -L 12345:127.0.0.1:50750 <config-name>
 ```
 And checkout locally:  
 http://localhost:12345
