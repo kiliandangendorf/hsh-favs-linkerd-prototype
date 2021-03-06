@@ -508,11 +508,8 @@ Now start the Dashboard with:
 linkerd dashboard
 ```
 Now we see unmeshed services in the UI.
-After that we remove all services with:
-```
-kubectl delete -f service...yaml
-```
-Now deloy the services with mesh:
+
+After that deloy the services with mesh:
 ```
 sh deploy-meshed.sh
 ```
