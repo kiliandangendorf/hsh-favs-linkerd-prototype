@@ -486,7 +486,26 @@ In every file in `src/svc` we see at the end of file traefik extentions.
 
 
 ### Deploy (unmeshed and meshed)
-- scripts and what they do
+At first deploy services without mash to the differenzes later.
+```
+kubectl apply -f service...yml
+```
+Now start the Dashboard with:
+```
+linkerd Dashboard
+```
+Now we see unmeshed services in the UI.
+After that we remove all services with:
+```
+kubectl delete -f service...yaml
+```
+Now deloy the services with mesh:
+```
+cat service..yaml \
+  | linkerd inject - \
+  | kubectl apply -f -
+```
+Now we see all service in the mesh.
 
 ### Generate Load
 - three example files
