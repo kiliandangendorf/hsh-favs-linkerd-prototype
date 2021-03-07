@@ -1,6 +1,6 @@
 \section{Prototypical Service Mesh Setup}
 
-The following chapter describes our concept of our prototypical service mesh implementation and its outcome. In order to also practically work out the differences between service meshes and a traditional microservice operation, we will initially run our application using only \kubernetes{}, and then later set up a service mesh.
+After deciding to choose \textsc{LinkerD} as a service mesh implmentation the following chapter describes our concept of our prototypical service mesh implementation and its outcome. In order to also practically work out the differences between service meshes and a traditional microservice operation, we will initially run our application using only \kubernetes{}, and then later set up a service mesh.
 
 \begin{figure*}
     \centering
@@ -46,6 +46,10 @@ Some service meshes also provide load balancing techniques, including a dashboar
 
 \subsubsection{Central Monitoring and Logging}
 The proof of concept should show that services in a microservice landscape can be monitored and managed centrally using the service mesh.
+
+\subsection{Basic Setup without Service Meshes}
+
+As stated earlier the basic functionality of the described showcases can be achieved without service meshes. Basic \textsc{Kubernetes} resources such as a \textsc{Deployment} enable the deployment of the described microservices and are made available in the cluster via a \textsc{Service} resource. To make them available outside of the cluster an \textsc{Ingress Route} routes traffic from the \textsc{Kubernetes} node to the \textsc{Service} resource. Sine \textsc{Service} resources make a microservice deployment available from inside the cluster, the \textsc{hello-world-service} is already able to communicate with the \textsc{name-service} without the use of service meshes. As soon as TLS secured communication or other further features need to be implemented the usage of service meshes eases the configuration process significantly.
 
 \subsection{Setup of Linkerd}
 
@@ -105,7 +109,7 @@ From this the unique DNS-name is derived the following way:
 <svc-name>.<namespace>.svc.<cluster>.local
 \end{lstlisting}
 
-When calling this DNS-name, \kubernetes{} will dissolve corresponding Pod and redirect the request accordingly.
+When calling this DNS-name, \kubernetes{} will dissolve corresponding Service and redirect the request accordingly.
 This way an application A can easily access the API of an application B within the same cluster under its DNS-name.
 And this holds even with service mesh.
 \linkerd{} wraps each application into a Pod next to \linkerd{}-proxy.

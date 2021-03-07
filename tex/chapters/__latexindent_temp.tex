@@ -1,96 +1,157 @@
-\section{Solutions on the market}
+\section{Prototypical Service Mesh Setup}
 
-The following chapter presents the two most popular solutions used in the context of service meshes: \textsc{Istio} and \textsc{Linkerd}. Both technology solutions have in common that they are based on \textsc{Kubernetes}. While \textsc{Linkerd} requires \textsc{Kubernetes}, \textsc{Istio} could also rely on virtual machines.
+After deciding to choose \textsc{LinkerD} as a service mesh implmentation the following chapter describes our concept of our prototypical service mesh implementation and its outcome. In order to also practically work out the differences between service meshes and a traditional microservice operation, we will initially run our application using only \kubernetes{}, and then later set up a service mesh.
 
-Service meshes that use \textsc{Kubernetes} extend the functionality by abstracting concepts like automatic sidecar injection. This would be also possible without service meshes, but significantly more complex and less automated.
+\begin{figure*}
+    \centering
+    \includegraphics[width=\textwidth]{img/diagram-draft.pdf}
+    \caption{Architecture overview of the PoC application}
+    \label{fig:poc-overview}
+\end{figure*}
 
-\subsection{Istio}
+\subsection{Services}
+\label{sec:services}
 
-As illustrated in figure \ref{fig:arch-istio}, \textsc{Istio} uses a basic control and data plane architecture, as explained in chapter \ref{chap:mesh-architecture}. For the data plane, it uses the sidecar pattern by using \textsc{Envoy} proxies. \textsc{Envoy} a high-performance proxy that already brings features like service discovery, load balancing, circuit breaking and many more \cite{istio-docs-arch}.
+Our basic idea is to implement three simple microservice applications that communicate via REST. To prove technology independence, one service is written in Node.js, while the other two services are written in Python. Another requirement to meet is that the services have to be as simple as possible. Furthermore, the functionality of the services is intended to be as follows:
 
-\textsc{Istiod} (Istio daemon) provides management for service discovery, configuration and certificates. It converts routing rules into \textsc{Envoy}'s configuration format and also directs the traffic to the sidecar proxies \cite{istio-docs-arch}.
+\begin{itemize}
+\item \textsc{name-service}: Provides endpoint to retrieve a collection of names. It stores the names in a file or a simple array list.
+\item \textsc{goodbye-world-service}: Provides endpoint to retrieve a message ``Goodbye, World!"
+\item \textsc{hello-world-service}: Contacts the \textsc{name-service} and provides an endpoint that returns a ``Hello, \{name\}" message for each name object from name service.
+\end{itemize}
 
-\begin{figure}
-    \includegraphics[width=\columnwidth]{img/istio_architecture.png}
-    \caption{Architecture of \textsc{Istio} \cite{istio-docs-arch}}
-    \label{fig:arch-istio}
-\end{figure}
+Since Linkerd does not provide an own ingress controller (see chapter \ref{linkerd}), we use an external ingress controller named \textsc{traefik}.
 
-\subsection{Linkerd}
-\label{linkerd}
-According to \textsc{Linkerd}'s documentation \cite{linkerd-docs-arch}, \textsc{Linkerd} also uses a basic control and data plane architecture, as explained in chapter \ref{chap:mesh-architecture}. It also uses the sidecar pattern, but has implemented an own proxy solution named \textsc{Linkerd2-proxy}. \textsc{Linkerd} developers rate \textsc{Envoy} as too complex \cite{linkerd-docs-no-envoy}, which is why they decided to implement their own solution, which they call a "micro-proxy". 
-Unlike \textsc{Istio}, \textsc{Linkerd} does not handle ingress traffic. It works in conjunction of every ingress controller of choice, e.g. \textsc{nginx} or \textsc{traefik} \cite{linkerd-docs-faq}.
+\subsection{Showcases}
+\label{sec:showcases-1}
 
-As illustrated in figure \ref{fig:arch-linkerd}, each \textsc{linkerd-proxy} has access to two components: \textsc{identity} and \textsc{destination}.
+Our prototypical implementation aims to provide answers to the following five challenges of running and maintaining microservices.
 
-\textsc{destination} is a lookup-service, where each proxy is able to check where exactly to send requests. \textsc{identity} provides a certificate authority.
+\subsubsection{Encryption}
 
-While injecting a sidecar proxy on an application service, a route \textsc{/metrics} at port 4191 is exposed to provide log messages and metrics for \textsc{Prometheus}, which is a central logging and monitoring instance which is often used with \textsc{Kubernetes} \cite{linkerd-docs-arch}.
+By using a service mesh, it should be shown that an encryption policy can be easily applied or removed.
 
-\begin{figure}
-    \includegraphics[width=\columnwidth]{img/linkerd_architecture.png}
-    \caption{Architecture of \textsc{Linkerd} \cite{linkerd-docs-arch}}
-    \label{fig:arch-linkerd}
-\end{figure}
+\subsubsection{Canary Deployment}
 
-\subsection{Comparison}
+To provide an example showcase for canary deployment, we implemented two versions of \textsc{name-service} which differ by the returned string (version 1 returns only forename while version 2 returns surname as well).
+The mesh is tasked with redirecting traffic so that 90\% of all requests are made to version 1 and 10\% of requests are made to version 2.
 
-As stated before, two very popular solutions for service meshes are \textsc{Linkerd} and \textsc{Istio}. Table \ref{tab:istio-linkerd} summarizes the key aspects of both tools, according to \cite{linkerd-github}, \cite{istio-github}, \cite{istio-linkerd-compare-1} and \cite{istio-linkerd-compare-2}:
+\subsubsection{Access Policies}
 
-\begin{table}
-\centering
-
-\begin{tabular*}{\columnwidth}{c|c|c}
-                                 & Istio                                                                                                              & Linkerd     \\\hline
-Initiators & \begin{tabular}[c]{@{}c@{}}Lyft, IBM,\\Google\end{tabular}                                                          	& \begin{tabular}[c]{@{}c@{}}Buoyant, Cloud Native\\Foundation\end{tabular}                                                           \\\hline
-License                 & \multicolumn{2}{c}{Apache 2.0}                                                                                                          \\\hline
-Runs on                          & \begin{tabular}[c]{@{}c@{}}Kubernetes,\\VMs\end{tabular}                                                           & Kubernetes  \\\hline
-Sidecar proxy                    & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
-Supports mTLS                    & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
-Certificate management           & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
-Authentication and authorization & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
-Blue/Green deployment            & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
-Circuit breaking                 & Yes                                                                                                                & No, in development          \\\hline
-Fault injection                  & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
-Rate limiting                    & \multicolumn{2}{c}{Yes}                                                                                                          \\\hline
-Monitoring                       & \multicolumn{2}{c}{Yes, with Prometheus}                                                                                         \\\hline
-Complexity                       & High                                                                                                               & Low         \\\hline
-Starts on GitHub \cite{linkerd-github} \cite{istio-github}              & 26.2k & 6.6k        \\\hline
-Open issues on GitHub \cite{linkerd-github} \cite{istio-github}                 & 817                                                                                                                & 257         \\\hline
-Documentation                    & ++                                                                                                                 & +          
-\end{tabular*}
-\vspace{0.25mm}
-\caption{Comparison between Isto and \textsc{Linkerd}}
-\label{tab:istio-linkerd}
-\end{table}
+Another restriction is that the \textsc{name-service} is only accessible from the \textsc{hello-world-service}. Access restriction should not be a task of the actual \textsc{name-service} application. We want to show that access to services is easily managable via YAML resources.
 
 
-%
-%
-% Mehr Erklärung zu Linkerd?
-%
-%
+\subsubsection{Load Balancing}
+Some service meshes also provide load balancing techniques, including a dashboard which visualizes the distribution of the specific load. This is also a showcase of our proof of concept.
 
-From an operators perspective, \textsc{Istio} and \textsc{Linkerd} look quite similar. After installing the service mesh, there are two main usage aspects: One the one hand, operators need to inject sidecar proxies in the pods of the microservice. On the other hand, they need to apply pluggable resources in YAML format, that could define policies like the usage of TLS.
+\subsubsection{Central Monitoring and Logging}
+The proof of concept should show that services in a microservice landscape can be monitored and managed centrally using the service mesh.
 
-By executing the command listed in \ref{lst:istio}, all deployments from namespaceA automatically get a sidecar proxy injected, while listing \ref{lst:linkerd} shows the injection command of a single deployment when using \textsc{Linkerd}.
+\subsection{Basic Setup without Service Meshes}
 
-\begin{lstlisting}[language=bash,caption={Injection of sidecards into deployments of a namespace in \textsc{Istio}},label={lst:istio}]
+As stated earlier the basic functionality of the described showcases can be achieved without service meshes. Basic \textsc{Kubernetes} resources such as a \textsc{Deployment} enable the deployment of the described microservices and are made available in the cluster via a \textsc{Service} resource. To make them 
+
+\subsection{Setup of Linkerd}
+
+The following sequence of bash commands shows the \textsc{Linkerd} installation process and the application of the service mesh to the \textsc{Kubernetes} cluster \cite{linkerd-get-started}:
+\begin{lstlisting}[language=bash,caption={Setup of \textsc{Linkerd}}, label={lst:linkerd-setup}]
 #!/bin/bash
-kubectl label namespace default \
-	istio-injection=enabled
+curl -sL https://run.linkerd.io/install \
+	| sh
+echo "export PATH=$PATH:~/.linkerd2/bin" \
+	>> ~/.bashrc
+linkerd install | kubectl apply -f -
 \end{lstlisting}
+The first line downloads and runs the install-script which chooses the correct installation for running operating system and validates checksum before finally linking the executable for \linkerd{}-CLI.
+The second line exports installation path of \linkerd{} into the \lstinline|$PATH|-environment. 
+Finally line 3 uses the \linkerd{}-CLI and installs the control plane on the cluster.
+\lstinline|linkerd install| returns a \kubernetes{} manifest in YAML, which is "piped" into \lstinline|kubectl| to apply all contained control plane resources.
 
-\begin{lstlisting}[language=bash,caption={Injection of sidecards into a deployment in \textsc{Linkerd}}, label={lst:linkerd}]
-#!/bin/bash
-cat deployment.yml \
+From now the framework for our service mesh is done.
+All communication between \linkerd{}-proxies are encrypted by default.
+
+You may notice the use of the "pipe". 
+This is a usual workflow in \linkerd{}: The output is a YAML-file, that can be piped into \lstinline|kubectl|.
+
+\subsection{Adding Services into Linkerd}
+Until now the service mesh is ruled only by \linkerd{}s own services.
+To add a service, you start with a common \kubernetes{}-manifest in YAML.
+But instead of giving it to \lstinline|kubectl| directly, you "inject" a \linkerd{} command showed in \autoref{lst:linkerd-inject}.
+\begin{lstlisting}[language=bash,caption={Inject \textsc{Linkerd}-annotation into manifest.}, label={lst:linkerd-inject}]
+cat <config-yml> \
 	| linkerd inject - \
 	| kubectl apply -f -
 \end{lstlisting}
+Since \linkerd{}-CLI is in between these command, \lstinline|inject| parses the YAML and adds annotations to it.
+The annotated file is passed into \lstinline|kubectl| in the common way.
+\linkerd{}-CLI searches for deployments to annotate.
+This way all Services belonging to one deployment can be covered.
+\autoref{lst:linkerd-annotation} shows an extract of an annotated YAML file.
+It says, \linkerd{} will inject every Pod in this deployment with its proxies.
 
-%
-% TODO: WRITE STUFF
-% 
+\begin{lstlisting}[caption={Extract of a \kubernetes{}-manifest annotated by \textsc{Linkerd}.}, label={lst:linkerd-annotation}]
+kind: Deployment
+spec:
+[...]
+	template:
+		metadata:
+			annotations:
+				linkerd.io/inject: enabled
+[...]				
+\end{lstlisting}
+ 
+\subsection{Communication between Services}
 
-As table \ref{tab:istio-linkerd} clarifies, \textsc{Linkerd} seems to be less complex and more lightweight compared to \textsc{Istio}. One missing key feature of \textsc{Linkerd} is circuit breaking, which is requested by users and currently under development \cite{linkerd-circuit-breaker}. Nevertheless, \textsc{Istio} seems to be more powerful and mature, has more users and functionalities. Along with this, the pool of tutorials and documentation is also larger.
-We will choose \textsc{Linkerd} because of its lightweight nature. The setup of \textsc{Linkerd}'s hello world example looks pretty straight forward and suitable and appropriate for a proof of concept. Since \textsc{Linkerd} suggests to use \textsc{traefik} as an ingress controller \cite{linkerd-traefik}, we will use it as well.
+In the \kubernetes{}-manifest the names of cluster, namespace and service is defined.
+From this the unique DNS-name is derived the following way:
+
+\begin{lstlisting}[caption={DNS-name of a local service in \kubernetes{}.}, label={lst:k8s-dns}]
+<svc-name>.<namespace>.svc.<cluster>.local
+\end{lstlisting}
+
+When calling this DNS-name, \kubernetes{} will dissolve corresponding Pod and redirect the request accordingly.
+This way an application A can easily access the API of an application B within the same cluster under its DNS-name.
+And this holds even with service mesh.
+\linkerd{} wraps each application into a Pod next to \linkerd{}-proxy.
+Communication between Services is now routed via these proxies through the service mesh.
+But from the view of the application it works the same way as before.
+
+\subsection{\traefik{} as Ingress Controller}
+
+How do we reach our services from outside?
+Therefore we need an ingress controller.
+As stated in \autoref{linkerd} we chose \traefik{}.
+Sure, \traefik{} could cope quite more than an ingress, but we will only use its remote proxy functionality here.
+\autoref{lst:ingress-hello} shows the configuration file for the ingress route \lstinline|/helloworld| to the corresponding \textsc{hello-world-service} as stated in \autoref{sec:services}.
+Again the interesting part is in the metadata annotation.
+First we tell \kubernetes{} to use \traefik{} as ingress controller.
+Second we route all traffic to the corresponding \linkerd{}-sidecar (abbreviated here in \kubernetes{}-style with \lstinline|l5d|).
+This configuration allows us to use different routes for different services by calling another path in the URL.
+Analog route we defined for \textsc{goodbye-world-service}.
+
+\begin{lstlisting}[caption={YAML configuration of \lstinline|helloworld|-ingress controller.}, label={lst:ingress-hello}]]
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+	name: helloworld
+	annotations:
+		kubernetes.io/ingress.class: "traefik"
+		ingress.kubernetes.io/
+			custom-request-headers: 
+			l5d-dst-override:helloworld.default
+			.svc.cluster.local:80
+spec:
+	rules:
+	- http:
+		paths:
+		- path: /helloworld
+			backend:
+			serviceName: helloworld
+			servicePort: 80
+\end{lstlisting}
+
+Now that the infrastructure is in place, we care about implementation of the showcases.
+
+%\subsection{Resource Definition for Applications}
+
+%\subsection{Policy Application}
