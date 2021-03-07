@@ -24,10 +24,9 @@ The idea of service meshes sounds very promising: The developer no longer has to
 
 \subsection{Sidecar Pattern}
 
-% TODO: Sidecar manchmal mit großem und manchmal mit kleinem S
-According to the service mesh definition, lots of service mesh solutions take usage of the so-called Sidecar pattern to realize the network proxies.
+According to the service mesh definition, lots of service mesh solutions take usage of the so-called sidecar pattern to realize the network proxies.
 
-According to a Sidecar pattern definition from \cite{sm3}, a sidecar is a software component that is located alongside the actual software, but runs within a dedicated process. All logic that is not part of the business logic is handled by the sidecar. Typically, the sidecar also handles incoming and outgoing communication. This is a good approach for clean separation of concerns.
+According to a sidecar pattern definition from \cite{sm3}, a sidecar is a software component that is located alongside the actual software, but runs within a dedicated process. All logic that is not part of the business logic is handled by the sidecar. Typically, the sidecar also handles incoming and outgoing communication. This is a good approach for clean separation of concerns.
 
 \subsection{Architecture}
 \label{chap:mesh-architecture}
