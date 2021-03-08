@@ -1,10 +1,14 @@
-# FAVS-Prototype: Linkerd Service Mesh
+# HsH-FAVS-Prototype: Linkerd as a Service Mesh Solution
 
-Short Documentation on how we setup our machine ([Set up the VPS](#set-up-the-vps)),  
-how we connect to it via `ssh` ([Connect to VPS](#connect-to-vps)),  
-how we use Linkerd on first sight and see its work ([Inspect Linkerd](#inspect-linkerd)) and  
-how we implemented showcases to prove Linkerd's work ([Implement Service Mesh Showcases](#implement-service-mesh-showcases)).
+This project was developed within the context of the FAVS course ("Fortgeschrittene Aspekte verteilter Systeme") at Hannover University of Applied Sciences and Arts.
 
+This Markdown is a short documentation on  
+- how we setup our machine ([Set up the VPS](#set-up-the-vps)),  
+- how we connect to it via `ssh` ([Connect to VPS](#connect-to-vps)),  
+- how we use Linkerd on first sight and see its work ([Inspect Linkerd](#inspect-linkerd)) and  
+- how we implemented showcases to prove Linkerd's work ([Implement Service Mesh Showcases](#implement-service-mesh-showcases)).
+
+The corresponding elaboration you'll find in folder `tex`.
 
 ## Overview
 - [Set up the VPS](#set-up-the-vps)
