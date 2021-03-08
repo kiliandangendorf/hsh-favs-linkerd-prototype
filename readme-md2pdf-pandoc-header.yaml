@@ -1,5 +1,6 @@
 ---
 title: "Readme.md"
+author: "https://github.com/kiliandangendorf/hsh-favs-linkerd-prototype" 
 #author: FAVS
 #date: '`r format(Sys.Date(), "%d %B, %Y")`'
 geometry: "left=3cm,right=2cm,top=1.8cm,bottom=1.8cm"
