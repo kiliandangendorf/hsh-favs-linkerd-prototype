@@ -45,6 +45,7 @@ The corresponding elaboration you'll find in folder `tex`.
     - [Canary Deployment (90/10 Traffic Split)](#canary-deployment-9010-traffic-split)
     - [Load Balancing](#load-balancing)
     - [Logging](#logging)
+- [Versions](#versions)
 - [Links](#links)
 
 ## Set up the VPS
@@ -655,6 +656,16 @@ To get info about these pods you’d have to type the whole pod-name accurate.
 With `bash-completion` you can complete the 15-digits unique identifier automatically by pressing the tab-key.
 
 
+## Versions
+
+Since functionality and APIs vary in time, the following table shows the versions of technologies we used:
+
+Technology | Version
+:---: | :---:
+Docker | 20.10.3
+Minikube | 1.17.1
+Kubernetes | 1.20.2
+Linkerd | 2.9.3
 
 ## Links
 
